@@ -1,11 +1,8 @@
 import React from "react";
-
-const style: React.CSSProperties = {
-    backgroundColor: 'pink'
-}
+import Map from "./Map";
 
 const App = () => {
-    return <div style={style}>asd</div>;
-}
+  return <Map />;
+};
 
 export default App;

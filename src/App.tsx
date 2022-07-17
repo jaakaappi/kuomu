@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import Map from "./Map";
+import Map from "./Map/Map";
 import Settings from "./Settings/Settings";
 import usePuuiloStores from "./usePuuiloStores";
 

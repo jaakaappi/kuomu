@@ -1,6 +1,7 @@
 "use strict";
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const Dotenv = require("dotenv-webpack");
 
 module.exports = {
   devtool: "inline-source-map",
@@ -42,5 +43,6 @@ module.exports = {
       filename: "index.html",
       favicon: "./src/favicon.png",
     }),
+    new Dotenv(),
   ],
 };

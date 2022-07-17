@@ -1,17 +1,17 @@
 import React, { useState } from "react";
-import PropTypes, { InferProps } from "prop-types";
-import DatePicker, {
-  CalendarContainer,
-  CalendarContainerProps,
-} from "react-datepicker";
+import DatePicker from "react-datepicker";
 
 import "react-datepicker/dist/react-datepicker.css";
 
-const Settings = () => {
+const DateTimeSelectors = () => {
+  let dateTomorrow = new Date();
+  dateTomorrow.setDate(new Date().getDate() + 1);
+
   const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(dateTomorrow);
+
   return (
-    <div style={{ zIndex: 1, position: "relative" }}>
+    <>
       Start:
       <DatePicker
         selected={startDate}
@@ -19,8 +19,8 @@ const Settings = () => {
       />
       End:
       <DatePicker selected={endDate} onChange={(date) => setEndDate(date!)} />
-    </div>
+    </>
   );
 };
 
-export default Settings;
+export default DateTimeSelectors;

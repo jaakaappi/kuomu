@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { PuuiloStore } from "./types";
+import { PuuiloStore, PuuiloStoreReservations } from "./types";
 
 const usePuuiloStores = () => {
   const [stores, setStores] = useState<Array<PuuiloStore> | null>(null);
@@ -33,6 +33,7 @@ const usePuuiloStores = () => {
             } else return null;
           })
         );
+
         const locations = await Promise.all(
           locationResponses.map((response) => {
             return response?.json() || "";
@@ -49,7 +50,45 @@ const usePuuiloStores = () => {
             return store;
           }
         });
-        setStores(storesWithLocations);
+
+        //TODO fetch items
+
+        const currentDate = new Date();
+        const oneJanuary = new Date(currentDate.getFullYear(), 0, 1);
+        const numberOfDays = Math.floor(
+          (currentDate.getTime() - oneJanuary.getTime()) / (24 * 60 * 60 * 1000)
+        );
+        const weekNumber = Math.ceil(
+          (currentDate.getDay() + 1 + numberOfDays) / 7
+        );
+        const slotResponses = await Promise.all(
+          storesWithLocations.map((store) => {
+            return fetch(
+              `https://varaus-api.puuilo.fi/api/reservation/v1/calendar/2022/weeks/${weekNumber}?_officeId=${store.id}&_officeItemId=Va71md0D`,
+              {
+                headers: {
+                  Apikey:
+                    "R9yRG8huMG3vBKwczyeQxqhh5v8k0DQ2RQx4IiDDjf01Otm4WuIPux6H07jNN7Mz",
+                },
+              }
+            );
+          })
+        );
+        const storeSlots: Array<{ data: PuuiloStoreReservations }> =
+          await Promise.all(
+            slotResponses.map((response) => {
+              return response?.json() || "";
+            })
+          );
+        const storesWithSlots = storesWithLocations.map((store, index) => {
+          const newStoreWithSlots = {
+            ...store,
+            reservations: storeSlots[index].data,
+          };
+          return newStoreWithSlots;
+        });
+        console.log(storesWithSlots);
+        setStores(storesWithSlots);
       } catch (error) {
         setError(error);
       } finally {

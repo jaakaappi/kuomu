@@ -19,17 +19,34 @@ const Map = (props: { puuiloStores: Array<PuuiloStore> }) => {
   const map = useRef<mapboxgl.Map | null>(null);
   const [zoom, setZoom] = useState(9);
 
-  const mapStoreMarker = () => {
+  const mapStoreMarker = (freeCapacity: number) => {
     const el = document.createElement("div");
     el.innerHTML = `
     <div style="display:flex;flex-direction:row;padding:5px;background-color:#fff;border-radius:5px;letter-spacing:2px;">
       <img src="${puuiloIcon}" width=32 height=32 />
       <p style="margin: 0px; padding: 5px; align-self: center;">
-        5/6
+        ${freeCapacity}
       </p>
     </div>
     `;
     return el;
+  };
+
+  const calculateFreeTrailersToday = (store: PuuiloStore) => {
+    console.log(store);
+    const free = store.reservations?.days[
+      new Date().getUTCDay() - 1
+    ].hours.reduce<Array<String>>((previous, current) => {
+      console.log(previous);
+      console.log(current);
+      current.slots[0].capacityUnits.forEach((unit) => {
+        console.log(unit);
+        if (!previous.includes(unit)) previous.push(unit);
+      });
+      return previous;
+    }, []).length;
+    console.log(free);
+    return free;
   };
 
   useEffect(() => {
@@ -60,7 +77,7 @@ const Map = (props: { puuiloStores: Array<PuuiloStore> }) => {
     if (map) {
       puuiloStores.map((store) => {
         if (store.location) {
-          new mapboxgl.Marker(mapStoreMarker())
+          new mapboxgl.Marker(mapStoreMarker(calculateFreeTrailersToday(store)))
             .setLngLat(store.location)
             .addTo(map.current!);
         }

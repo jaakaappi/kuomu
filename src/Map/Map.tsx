@@ -17,20 +17,10 @@ const Map = (props: { puuiloStores: Array<PuuiloStore> }) => {
 
   const mapContainer = useRef(null);
   const map = useRef<mapboxgl.Map | null>(null);
-  const [lng, setLng] = useState(-70.9);
-  const [lat, setLat] = useState(42.35);
   const [zoom, setZoom] = useState(9);
 
   const mapStoreMarker = () => {
     const el = document.createElement("div");
-    const markerContainerStyle = {
-      display: "flex",
-      flexDirection: "row",
-      padding: "5px",
-      backgroundColor: "#fff",
-      borderRadius: "5px",
-      letterSpacing: "2px",
-    };
     el.innerHTML = `
     <div style="display:flex;flex-direction:row;padding:5px;background-color:#fff;border-radius:5px;letter-spacing:2px;">
       <img src="${puuiloIcon}" width=32 height=32 />
@@ -53,7 +43,7 @@ const Map = (props: { puuiloStores: Array<PuuiloStore> }) => {
       const newPosition = { lat: latitude, lng: longitude };
       setPosition(newPosition);
       map.current?.setCenter(newPosition);
-      map.current?.setZoom(13);
+      map.current?.setZoom(9);
     }
   }, [latitude, longitude]);
 
@@ -83,7 +73,7 @@ const Map = (props: { puuiloStores: Array<PuuiloStore> }) => {
       <div
         ref={mapContainer}
         className="map-container"
-        style={{ height: "500px" }}
+        style={{ height: "1000px" }}
       />
     </div>
   );

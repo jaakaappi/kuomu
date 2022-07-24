@@ -24,8 +24,7 @@ const usePuuiloStores = () => {
         const stores = (await storeResponse.json()).data as Array<PuuiloStore>;
 
         const storesWithStoreUrls = stores.map((store) => {
-          const url = `https://varaus.puuilo.fi/${store.title.toLowerCase().replace('ä', 'a').replace('ö', 'o').replace(',', '').split(' ').join('-')
-            }`;
+          const url = `https://varaus.puuilo.fi/${store.title.toLowerCase().replace('ä', 'a').replace('ö', 'o').replace(',', '').split(' ').join('-')}`;
           console.log(store.title.toLocaleLowerCase());
           console.log(url);
           return { ...store, url: url };
@@ -37,9 +36,8 @@ const usePuuiloStores = () => {
               return fetch(
                 `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
                   store.address + " " + store.city + " " + store.postCode
-                )
-                }.json ? country = fi & limit=1 & types=address % 2Cpoi & access_token=${process.env.MAPBOX_API_TOKEN
-                } `
+                )}.json?country=fi&limit=1&types=address%2Cpoi&access_token=${process.env.MAPBOX_API_TOKEN
+                }`
               );
             } else return null;
           })

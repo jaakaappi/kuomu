@@ -8,7 +8,8 @@ export type PuuiloStore = {
   postCode: Number;
   city: String;
   location?: [number, number] | undefined;
-  reservations: PuuiloStoreReservations;
+  reservations: Array<PuuiloStoreReservations>;
+  items?: Array<PuuiloItem>;
 };
 
 type PuuiloStoreInfo = {
@@ -40,4 +41,13 @@ type PuuiloReservationSlot = {
    */
   capacityUnits: Array<string>;
   price: Number;
+};
+
+export type PuuiloItem = {
+  id: String;
+  title: String;
+  shopItemId: number;
+  capacityUnits: Array<string>;
+  state: String;
+  // TODO refactor to contain reservations
 };

@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
-import { PuuiloStore, PuuiloStoreReservations } from "./types";
+import { DateTime } from "luxon";
+
+import { PuuiloItem, PuuiloStore, PuuiloStoreReservations } from "./types";
 
 const usePuuiloStores = () => {
   const [stores, setStores] = useState<Array<PuuiloStore> | null>(null);
@@ -51,42 +53,104 @@ const usePuuiloStores = () => {
           }
         });
 
-        //TODO fetch items
-
-        const currentDate = new Date();
-        const oneJanuary = new Date(currentDate.getFullYear(), 0, 1);
-        const numberOfDays = Math.floor(
-          (currentDate.getTime() - oneJanuary.getTime()) / (24 * 60 * 60 * 1000)
-        );
-        const weekNumber = Math.ceil(
-          (currentDate.getDay() + 1 + numberOfDays) / 7
-        );
-        const slotResponses = await Promise.all(
+        const itemResponses = await Promise.all(
           storesWithLocations.map((store) => {
-            return fetch(
-              `https://varaus-api.puuilo.fi/api/reservation/v1/calendar/2022/weeks/${weekNumber}?_officeId=${store.id}&_officeItemId=Va71md0D`,
-              {
-                headers: {
-                  Apikey:
-                    "R9yRG8huMG3vBKwczyeQxqhh5v8k0DQ2RQx4IiDDjf01Otm4WuIPux6H07jNN7Mz",
-                },
-              }
-            );
+            if (store.address.length > 0) {
+              return fetch(
+                `https://varaus-api.puuilo.fi/api/reservation/v1/offices/${store.id}/items`,
+                {
+                  headers: {
+                    Apikey:
+                      "R9yRG8huMG3vBKwczyeQxqhh5v8k0DQ2RQx4IiDDjf01Otm4WuIPux6H07jNN7Mz",
+                  },
+                }
+              );
+            } else return null;
           })
         );
-        const storeSlots: Array<{ data: PuuiloStoreReservations }> =
+        const items = (
           await Promise.all(
-            slotResponses.map((response) => {
+            itemResponses.map((response) => {
               return response?.json() || "";
             })
-          );
-        const storesWithSlots = storesWithLocations.map((store, index) => {
+          )
+        ).map((itemResponse) => {
+          return itemResponse.data as Array<PuuiloItem>;
+        });
+        console.log("items");
+        console.log(items);
+        const storesWithItems = storesWithLocations.map((store, index) => {
+          if (items[index]) {
+            const newStoreWithItems = {
+              ...store,
+              items: items[index].filter(
+                (item) =>
+                  item.state === "active" && item.title.includes("kärry")
+              ),
+            };
+            return newStoreWithItems;
+          } else {
+            return store;
+          }
+        });
+        console.log("storesWithItems");
+        console.log(storesWithItems);
+
+        // const currentDate = new Date();
+        // const oneJanuary = new Date(currentDate.getFullYear(), 0, 1);
+        // const numberOfDays = Math.floor(
+        //   (currentDate.getTime() - oneJanuary.getTime()) / (24 * 60 * 60 * 1000)
+        // );
+        // const muricanNumberOfDay = currentDate.getDay();
+        // const correctNumberOfDay =
+        //   muricanNumberOfDay + muricanNumberOfDay == 0 ? 6 : -1;
+        // const weekNumber = Math.ceil((correctNumberOfDay + numberOfDays) / 7);
+
+        const slotResponsesPerStore = await Promise.all(
+          storesWithItems.map(async (store) => {
+            return store.items
+              ? await Promise.all(
+                  store.items.map((item: PuuiloItem) => {
+                    return fetch(
+                      `https://varaus-api.puuilo.fi/api/reservation/v1/calendar/2022/weeks/${
+                        DateTime.local().weekNumber
+                      }?_officeId=${store.id}&_officeItemId=${item.id}`,
+                      {
+                        headers: {
+                          Apikey:
+                            "R9yRG8huMG3vBKwczyeQxqhh5v8k0DQ2RQx4IiDDjf01Otm4WuIPux6H07jNN7Mz",
+                        },
+                      }
+                    );
+                  })
+                )
+              : [];
+          })
+        );
+
+        const slotJsonsPerStore = await Promise.all(
+          slotResponsesPerStore.map(
+            async (responses) =>
+              await Promise.all(
+                responses.map((response) => response?.json() || "")
+              )
+          )
+        );
+        const storeSlots = await Promise.all(
+          slotJsonsPerStore.map((jsons) =>
+            jsons.map((json) => (json.data as PuuiloStoreReservations) || "")
+          )
+        );
+        console.log("storeSlots");
+        console.log(storeSlots);
+        const storesWithSlots = storesWithItems.map((store, index) => {
           const newStoreWithSlots = {
             ...store,
-            reservations: storeSlots[index].data,
+            reservations: storeSlots[index],
           };
           return newStoreWithSlots;
         });
+        console.log("storesWithSlots");
         console.log(storesWithSlots);
         setStores(storesWithSlots);
       } catch (error) {

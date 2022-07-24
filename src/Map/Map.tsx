@@ -7,6 +7,7 @@ import { PuuiloStore } from "../types";
 import "mapbox-gl/dist/mapbox-gl.css";
 import markerBackgroundImage from "../markerbackground.svg";
 import puuiloIcon from "../puuilo.jpg";
+import { DateTime } from "luxon";
 
 mapboxgl.accessToken = process.env.MAPBOX_API_TOKEN || "";
 
@@ -33,20 +34,33 @@ const Map = (props: { puuiloStores: Array<PuuiloStore> }) => {
   };
 
   const calculateFreeTrailersToday = (store: PuuiloStore) => {
-    console.log(store);
-    const free = store.reservations?.days[
-      new Date().getUTCDay() - 1
-    ].hours.reduce<Array<String>>((previous, current) => {
-      console.log(previous);
-      console.log(current);
-      current.slots[0].capacityUnits.forEach((unit) => {
-        console.log(unit);
-        if (!previous.includes(unit)) previous.push(unit);
-      });
-      return previous;
-    }, []).length;
-    console.log(free);
-    return free;
+    if (store.items && store.reservations) {
+      return store.items.reduce((previousSum, currentItem, index) => {
+        const allCapacityUnits = currentItem.capacityUnits.flat();
+
+        console.log(store);
+        const availableHourSlots = store.reservations![index].days[
+          DateTime.local().weekday - 1
+        ].hours.filter((hour) => hour.hour >= DateTime.local().hour.toString());
+
+        const freeCapacityUnits = store.reservations
+          ? Array.from(
+              new Set(
+                availableHourSlots.flatMap((hourSlot) => {
+                  const slotCapacityUnits = hourSlot.slots[0].capacityUnits;
+                  // Puuilo API returns units that are already reserved
+                  // Units not listed are available
+                  const freeSlotCapacityUnits = allCapacityUnits.filter(
+                    (unit) => !slotCapacityUnits.includes(unit)
+                  );
+                  return freeSlotCapacityUnits;
+                })
+              )
+            )
+          : [];
+        return previousSum + freeCapacityUnits.length;
+      }, 0);
+    } else return 0;
   };
 
   useEffect(() => {

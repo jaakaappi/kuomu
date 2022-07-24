@@ -10,6 +10,7 @@ export type PuuiloStore = {
   location?: [number, number] | undefined;
   reservations: Array<PuuiloStoreReservations>;
   items?: Array<PuuiloItem>;
+  url?: string;
 };
 
 type PuuiloStoreInfo = {

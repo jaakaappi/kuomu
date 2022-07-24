@@ -5,7 +5,6 @@ import mapboxgl from "mapbox-gl";
 import { PuuiloStore } from "../types";
 
 import "mapbox-gl/dist/mapbox-gl.css";
-import markerBackgroundImage from "../markerbackground.svg";
 import puuiloIcon from "../puuilo.jpg";
 import { DateTime } from "luxon";
 
@@ -20,7 +19,7 @@ const Map = (props: { puuiloStores: Array<PuuiloStore> }) => {
   const map = useRef<mapboxgl.Map | null>(null);
   const [zoom, setZoom] = useState(9);
 
-  const mapStoreMarker = (freeCapacity: number) => {
+  const mapStoreMarker = (freeCapacity: number, storeLink: string) => {
     const el = document.createElement("div");
     el.innerHTML = `
     <div style="display:flex;flex-direction:row;padding:5px;background-color:#fff;border-radius:5px;letter-spacing:2px;">
@@ -30,6 +29,10 @@ const Map = (props: { puuiloStores: Array<PuuiloStore> }) => {
       </p>
     </div>
     `;
+    el.addEventListener('click', () => {
+      window.open(storeLink, "_blank");
+    });
+    console.log(storeLink);
     return el;
   };
 
@@ -38,25 +41,24 @@ const Map = (props: { puuiloStores: Array<PuuiloStore> }) => {
       return store.items.reduce((previousSum, currentItem, index) => {
         const allCapacityUnits = currentItem.capacityUnits.flat();
 
-        console.log(store);
         const availableHourSlots = store.reservations![index].days[
           DateTime.local().weekday - 1
         ].hours.filter((hour) => hour.hour >= DateTime.local().hour.toString());
 
         const freeCapacityUnits = store.reservations
           ? Array.from(
-              new Set(
-                availableHourSlots.flatMap((hourSlot) => {
-                  const slotCapacityUnits = hourSlot.slots[0].capacityUnits;
-                  // Puuilo API returns units that are already reserved
-                  // Units not listed are available
-                  const freeSlotCapacityUnits = allCapacityUnits.filter(
-                    (unit) => !slotCapacityUnits.includes(unit)
-                  );
-                  return freeSlotCapacityUnits;
-                })
-              )
+            new Set(
+              availableHourSlots.flatMap((hourSlot) => {
+                const slotCapacityUnits = hourSlot.slots[0].capacityUnits;
+                // Puuilo API returns units that are already reserved
+                // Units not listed are available
+                const freeSlotCapacityUnits = allCapacityUnits.filter(
+                  (unit) => !slotCapacityUnits.includes(unit)
+                );
+                return freeSlotCapacityUnits;
+              })
             )
+          )
           : [];
         return previousSum + freeCapacityUnits.length;
       }, 0);
@@ -91,7 +93,7 @@ const Map = (props: { puuiloStores: Array<PuuiloStore> }) => {
     if (map) {
       puuiloStores.map((store) => {
         if (store.location) {
-          new mapboxgl.Marker(mapStoreMarker(calculateFreeTrailersToday(store)))
+          new mapboxgl.Marker(mapStoreMarker(calculateFreeTrailersToday(store), store.url || ''))
             .setLngLat(store.location)
             .addTo(map.current!);
         }

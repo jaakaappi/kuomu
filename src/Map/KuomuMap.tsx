@@ -11,9 +11,12 @@ import KuomuMarker from "./KuomuMarker";
 
 const mapboxAccessToken = process.env.MAPBOX_API_TOKEN || "";
 
-const KuomuMap = (props: { puuiloStores: Array<PuuiloStore> }) => {
-  const { puuiloStores } = props;
-  const { latitude, longitude, errorMessage } = usePosition(false);
+const KuomuMap = (props: {
+  puuiloStores: Array<PuuiloStore>;
+  latitude: number | undefined;
+  longitude: number | undefined;
+}) => {
+  const { puuiloStores, latitude, longitude } = props;
   const [markers, setMarkers] = useState<Array<JSX.Element>>([]);
 
   const [viewState, setViewState] = React.useState({
@@ -24,7 +27,7 @@ const KuomuMap = (props: { puuiloStores: Array<PuuiloStore> }) => {
 
   const calculateFreeTrailersToday = (store: PuuiloStore) => {
     if (store.items) {
-      return store.items.reduce((previousSum, currentItem, index) => {
+      return store.items.reduce((previousSum, currentItem) => {
         const allCapacityUnits = currentItem.capacityUnits.flat();
 
         const availableHourSlots = currentItem.reservations.days[
@@ -52,14 +55,13 @@ const KuomuMap = (props: { puuiloStores: Array<PuuiloStore> }) => {
   };
 
   useEffect(() => {
-    if (typeof errorMessage !== undefined && latitude && longitude) {
+    if (latitude && longitude) {
       console.log("Lat: " + latitude + " long: " + longitude);
       setViewState({ latitude: latitude, longitude: longitude, zoom: 11 });
     }
   }, [latitude, longitude]);
 
   useEffect(() => {
-    console.log("asd");
     const newMarkers =
       puuiloStores
         .filter((store) => store.location)
@@ -79,15 +81,17 @@ const KuomuMap = (props: { puuiloStores: Array<PuuiloStore> }) => {
   }, [puuiloStores]);
 
   return (
-    <Map
-      {...viewState}
-      onMove={(evt) => setViewState(evt.viewState)}
-      mapStyle="mapbox://styles/mapbox/streets-v11"
-      mapboxAccessToken={mapboxAccessToken}
-      style={{ height: "85vh" }}
-    >
-      {markers}
-    </Map>
+    <div>
+      <Map
+        {...viewState}
+        onMove={(evt) => setViewState(evt.viewState)}
+        mapStyle="mapbox://styles/mapbox/streets-v11"
+        mapboxAccessToken={mapboxAccessToken}
+        style={{ height: "85vh" }}
+      >
+        {markers}
+      </Map>
+    </div>
   );
 };
 

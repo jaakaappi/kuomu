@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import List from "./List/List";
 
@@ -7,9 +7,11 @@ import "react-tabs/style/react-tabs.css";
 import KuomuMap from "./Map/KuomuMap";
 import Settings from "./Settings/Settings";
 import usePuuiloStores from "./usePuuiloStores";
+import { usePosition } from "use-position";
 
 const App = () => {
   const { stores, loading, error } = usePuuiloStores();
+  const { latitude, longitude, errorMessage } = usePosition(false);
 
   return (
     <Tabs>
@@ -20,10 +22,18 @@ const App = () => {
 
       <TabPanel>
         <Settings />
-        <KuomuMap puuiloStores={stores || []} />
+        <KuomuMap
+          puuiloStores={stores || []}
+          latitude={latitude}
+          longitude={longitude}
+        />
       </TabPanel>
       <TabPanel>
-        <List puuiloStores={stores || []} />
+        <List
+          puuiloStores={stores || []}
+          latitude={latitude}
+          longitude={longitude}
+        />
       </TabPanel>
     </Tabs>
   );

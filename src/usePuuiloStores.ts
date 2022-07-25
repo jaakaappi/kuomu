@@ -24,11 +24,9 @@ const usePuuiloStores = () => {
         const stores = (await storeResponse.json()).data as Array<PuuiloStore>;
 
         const storesWithStoreUrls = stores.map((store) => {
-          const url = `https://varaus.puuilo.fi/${store.title.toLowerCase().replace('ä', 'a').replace('ö', 'o').replace(',', '').split(' ').join('-')}`;
-          console.log(store.title.toLocaleLowerCase());
-          console.log(url);
-          return { ...store, url: url };
-        })
+          // const url = `https://varaus.puuilo.fi/${store.title.toLowerCase().replace('ä', 'a').replace('ö', 'o').replace(',', '').split(' ').join('-')}`;
+          return { ...store, url: "" };
+        });
 
         const locationResponses = await Promise.all(
           storesWithStoreUrls.map((store) => {
@@ -36,7 +34,8 @@ const usePuuiloStores = () => {
               return fetch(
                 `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
                   store.address + " " + store.city + " " + store.postCode
-                )}.json?country=fi&limit=1&types=address%2Cpoi&access_token=${process.env.MAPBOX_API_TOKEN
+                )}.json?country=fi&limit=1&types=address%2Cpoi&access_token=${
+                  process.env.MAPBOX_API_TOKEN
                 }`
               );
             } else return null;
@@ -117,19 +116,20 @@ const usePuuiloStores = () => {
           storesWithItems.map(async (store) => {
             return store.items
               ? await Promise.all(
-                store.items.map((item: PuuiloItem) => {
-                  return fetch(
-                    `https://varaus-api.puuilo.fi/api/reservation/v1/calendar/2022/weeks/${DateTime.local().weekNumber
-                    }?_officeId=${store.id}&_officeItemId=${item.id}`,
-                    {
-                      headers: {
-                        Apikey:
-                          "R9yRG8huMG3vBKwczyeQxqhh5v8k0DQ2RQx4IiDDjf01Otm4WuIPux6H07jNN7Mz",
-                      },
-                    }
-                  );
-                })
-              )
+                  store.items.map((item: PuuiloItem) => {
+                    return fetch(
+                      `https://varaus-api.puuilo.fi/api/reservation/v1/calendar/2022/weeks/${
+                        DateTime.local().weekNumber
+                      }?_officeId=${store.id}&_officeItemId=${item.id}`,
+                      {
+                        headers: {
+                          Apikey:
+                            "R9yRG8huMG3vBKwczyeQxqhh5v8k0DQ2RQx4IiDDjf01Otm4WuIPux6H07jNN7Mz",
+                        },
+                      }
+                    );
+                  })
+                )
               : [];
           })
         );

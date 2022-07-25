@@ -36,6 +36,7 @@
     "react-datepicker": "^4.8.0",
     "react-dom": "^18.2.0",
     "react-tabs": "^5.1.0",
+    "react-map-gl": "^7.0.18",
     "use-position": "^1.0.0"
   }
 }

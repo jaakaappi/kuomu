@@ -1,9 +1,10 @@
 import React from "react";
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-import 'react-tabs/style/react-tabs.css';
+import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import List from "./List/List";
 
-import Map from "./Map/Map";
+import "react-tabs/style/react-tabs.css";
+
+import KuomuMap from "./Map/KuomuMap";
 import Settings from "./Settings/Settings";
 import usePuuiloStores from "./usePuuiloStores";
 
@@ -19,7 +20,7 @@ const App = () => {
 
       <TabPanel>
         <Settings />
-        <Map puuiloStores={stores || []} />
+        <KuomuMap puuiloStores={stores || []} />
       </TabPanel>
       <TabPanel>
         <List puuiloStores={stores || []} />

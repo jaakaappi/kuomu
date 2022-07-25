@@ -209,7 +209,7 @@
   resolved "https://registry.yarnpkg.com/@types/luxon/-/luxon-3.0.0.tgz#47fb7891e41875fce7018a8bd3d09b204c5621f5"
   integrity sha512-Lx+EZoJxUKw4dp8uei9XiUVNlgkYmax5+ovqt6Xf3LzJOnWhlfJw/jLBmqfGVwOP/pDr4HT8bI1WtxK0IChMLw==
 
-"@types/mapbox-gl@^2.7.3":
+"@types/mapbox-gl@^2.6.0", "@types/mapbox-gl@^2.7.3":
   version "2.7.3"
   resolved "https://registry.yarnpkg.com/@types/mapbox-gl/-/mapbox-gl-2.7.3.tgz#d75049251f1cb5f5a5453d6c20ffb9d2de6cbd75"
   integrity sha512-XdveeJptNNZw7ZoeiAJ2/dupNtWaV6qpBG/SOFEpQNQAc+oiO6qUznX85n+W1XbLeD8SVRVfVORKuR+I4CHDZw==
@@ -2112,6 +2112,13 @@ react-is@^16.13.1:
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
+
+react-map-gl@^7.0.18:
+  version "7.0.18"
+  resolved "https://registry.yarnpkg.com/react-map-gl/-/react-map-gl-7.0.18.tgz#832319ad33152526827108634738e760b912ee1f"
+  integrity sha512-GLiupp35BNPPFpgz3pYWU4lLt3qzHFPQSVBkOco7RrRnG2EpIj8sKogG8YZHbd+pHIHIZJOLa2pOwKLoaoAZGA==
+  dependencies:
+    "@types/mapbox-gl" "^2.6.0"
 
 react-onclickoutside@^6.12.0:
   version "6.12.2"

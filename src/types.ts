@@ -1,12 +1,12 @@
 export type PuuiloStore = {
-  id: String;
-  slotsPerHour: String;
+  id: string;
+  slotsPerHour: string;
   store: PuuiloStoreInfo;
-  openHours: Array<{ from: String; to: String }>;
-  title: String;
-  address: String;
+  openHours: Array<{ from: string; to: string }>;
+  title: string;
+  address: string;
   postCode: Number;
-  city: String;
+  city: string;
   location?: [number, number] | undefined;
   reservations: Array<PuuiloStoreReservations>;
   items?: Array<PuuiloItem>;
@@ -14,16 +14,16 @@ export type PuuiloStore = {
 };
 
 type PuuiloStoreInfo = {
-  id: String;
-  title: String;
-  links: { href: String };
+  id: string;
+  title: string;
+  links: { href: string };
 };
 
 export type PuuiloStoreReservations = {
-  date: String;
+  date: string;
   days: Array<{
-    date: String;
-    hours: Array<{ hour: String; slots: Array<PuuiloReservationSlot> }>;
+    date: string;
+    hours: Array<{ hour: string; slots: Array<PuuiloReservationSlot> }>;
   }>;
 };
 
@@ -45,10 +45,10 @@ type PuuiloReservationSlot = {
 };
 
 export type PuuiloItem = {
-  id: String;
-  title: String;
+  id: string;
+  title: string;
   shopItemId: number;
   capacityUnits: Array<string>;
-  state: String;
+  state: string;
   // TODO refactor to contain reservations
 };

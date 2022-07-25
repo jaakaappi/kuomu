@@ -23,15 +23,15 @@ const KuomuMap = (props: { puuiloStores: Array<PuuiloStore> }) => {
   });
 
   const calculateFreeTrailersToday = (store: PuuiloStore) => {
-    if (store.items && store.reservations) {
+    if (store.items) {
       return store.items.reduce((previousSum, currentItem, index) => {
         const allCapacityUnits = currentItem.capacityUnits.flat();
 
-        const availableHourSlots = store.reservations![index].days[
+        const availableHourSlots = currentItem.reservations.days[
           DateTime.local().weekday - 1
         ].hours.filter((hour) => hour.hour >= DateTime.local().hour.toString());
 
-        const freeCapacityUnits = store.reservations
+        const freeCapacityUnits = currentItem.reservations
           ? Array.from(
               new Set(
                 availableHourSlots.flatMap((hourSlot) => {

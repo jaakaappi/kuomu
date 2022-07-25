@@ -52,7 +52,7 @@ const usePuuiloStores = () => {
             const newStoreWithLocation = {
               ...store,
               location: locations[index].features[0].center,
-            };
+            } as PuuiloStore;
             return newStoreWithLocation;
           } else {
             return store;
@@ -93,7 +93,7 @@ const usePuuiloStores = () => {
                 (item) =>
                   item.state === "active" && item.title.includes("kärry")
               ),
-            };
+            } as PuuiloStore;
             return newStoreWithItems;
           } else {
             return store;
@@ -101,16 +101,6 @@ const usePuuiloStores = () => {
         });
         console.log("storesWithItems");
         console.log(storesWithItems);
-
-        // const currentDate = new Date();
-        // const oneJanuary = new Date(currentDate.getFullYear(), 0, 1);
-        // const numberOfDays = Math.floor(
-        //   (currentDate.getTime() - oneJanuary.getTime()) / (24 * 60 * 60 * 1000)
-        // );
-        // const muricanNumberOfDay = currentDate.getDay();
-        // const correctNumberOfDay =
-        //   muricanNumberOfDay + muricanNumberOfDay == 0 ? 6 : -1;
-        // const weekNumber = Math.ceil((correctNumberOfDay + numberOfDays) / 7);
 
         const slotResponsesPerStore = await Promise.all(
           storesWithItems.map(async (store) => {
@@ -150,9 +140,13 @@ const usePuuiloStores = () => {
         console.log("storeSlots");
         console.log(storeSlots);
         const storesWithSlots = storesWithItems.map((store, index) => {
+          const slots = storeSlots[index];
+          const items = store.items?.map((item, index) => {
+            return { ...item, reservations: slots[index] };
+          });
           const newStoreWithSlots = {
             ...store,
-            reservations: storeSlots[index],
+            items: items,
           };
           return newStoreWithSlots;
         });

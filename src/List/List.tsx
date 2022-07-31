@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { distance } from "@turf/turf"
 
 import { PuuiloStore } from "../types";
-import { calculateFreeTrailersForDateTime } from "../utils";
+import { calculateFreeTrailersForDateTime, formatPuuiloUrlString } from "../utils";
 
 const List = (props: {
   puuiloStores: Array<PuuiloStore>;
@@ -66,7 +66,7 @@ const List = (props: {
 
               return item ? (
                 <div key={slot.id + itemIndex}>
-                  <h3>{item.title}</h3>
+                  <h3><a href={`${store.store.store.url}/${formatPuuiloUrlString(item.title)}`}>{item.title}</a></h3>
                   <p>{store.store.store.title} - {store.store.distance?.toPrecision(3)} km</p>
                 </div>) : (null);
             })}

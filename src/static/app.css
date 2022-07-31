@@ -1,8 +1,8 @@
 html,
 body,
-#app,
-#app>div {
-  height: 100%
+#app {
+  height: 100%;
+  margin: 0px;
 }
 
 @keyframes rotate {

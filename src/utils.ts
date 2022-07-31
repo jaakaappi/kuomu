@@ -1,4 +1,5 @@
 import { DateTime } from "luxon";
+import { string } from "prop-types";
 import { PuuiloStore } from "./types";
 
 export const calculateFreeTrailersForDateTime = (
@@ -28,3 +29,5 @@ export const calculateFreeTrailersForDateTime = (
     return freeTrailers;
   } else return [];
 };
+
+export const formatPuuiloUrlString = (inputString: string) => inputString.replace(/[äÄ]/g, 'a').replace(/[öÖ]/g, 'o').replace(',', '').split(' ').join('-').toLowerCase()

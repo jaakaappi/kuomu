@@ -10,7 +10,7 @@ const KuomuMarker = (props: {
 }) => {
   const { latitude, longitude, freeCapacity, icon, onClick } = props;
   return (
-    <Marker latitude={latitude} longitude={longitude}>
+    <Marker latitude={latitude} longitude={longitude} onClick={onClick}>
       <div
         style={{
           display: "flex",

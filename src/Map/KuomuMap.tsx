@@ -53,8 +53,8 @@ const KuomuMap = (props: {
               longitude={store.location![0]}
               icon={puuiloIcon}
               freeCapacity={calculateTotalFreeCapacityUnits(store, DateTime.local())}
-              onClick={() => { }}
-            ></KuomuMarker>
+              onClick={() => window.open(store.url, '_blank')}
+            />
           );
         }) || [];
     setMarkers(newMarkers);
@@ -67,7 +67,7 @@ const KuomuMap = (props: {
         onMove={(evt) => setViewState(evt.viewState)}
         mapStyle="mapbox://styles/mapbox/streets-v11"
         mapboxAccessToken={mapboxAccessToken}
-        style={{ height: "85vh" }}
+        style={{ height: "75vh" }}
         dragRotate={false}
       >
         {markers}

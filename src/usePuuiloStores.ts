@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { DateTime } from "luxon";
 
 import { PuuiloItem, PuuiloStore, PuuiloStoreReservations } from "./types";
+import { formatPuuiloUrlString } from "./utils";
 
 const usePuuiloStores = () => {
   const [stores, setStores] = useState<Array<PuuiloStore> | null>(null);
@@ -24,8 +25,8 @@ const usePuuiloStores = () => {
         const stores = (await storeResponse.json()).data as Array<PuuiloStore>;
 
         const storesWithStoreUrls = stores.map((store) => {
-          // const url = `https://varaus.puuilo.fi/${store.title.toLowerCase().replace('ä', 'a').replace('ö', 'o').replace(',', '').split(' ').join('-')}`;
-          return { ...store, url: "" };
+          const url = `https://varaus.puuilo.fi/${formatPuuiloUrlString(store.title)}`;
+          return { ...store, url: url };
         });
 
         const locationResponses = await Promise.all(

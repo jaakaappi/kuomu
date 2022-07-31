@@ -18,28 +18,30 @@ const App = () => {
   const LoadingIconComponent = () => <img id="loading" src={loadingIcon} width="16px" height="16px" style={{ verticalAlign: "text-top" }} />
 
   return (
-    <Tabs>
-      <TabList>
-        <Tab>{loading ? < LoadingIconComponent /> : null}{error ? "⚠️" : ""} Kartta</Tab>
-        <Tab disabled={loading || error}>{loading ? < LoadingIconComponent /> : null}{error ? "⚠️" : ""} Lista</Tab>
-      </TabList>
+    <div style={{ padding: "10px" }}>
+      <Settings />
+      <Tabs>
+        <TabList>
+          <Tab>{loading ? < LoadingIconComponent /> : null}{error ? "⚠️" : ""} Kartta</Tab>
+          <Tab disabled={loading || error}>{loading ? < LoadingIconComponent /> : null}{error ? "⚠️" : ""} Lista</Tab>
+        </TabList>
 
-      <TabPanel>
-        <Settings />
-        <KuomuMap
-          puuiloStores={stores || []}
-          latitude={latitude}
-          longitude={longitude}
-        />
-      </TabPanel>
-      <TabPanel >
-        <List
-          puuiloStores={stores || []}
-          latitude={latitude}
-          longitude={longitude}
-        />
-      </TabPanel>
-    </Tabs>
+        <TabPanel>
+          <KuomuMap
+            puuiloStores={stores || []}
+            latitude={latitude}
+            longitude={longitude}
+          />
+        </TabPanel>
+        <TabPanel >
+          <List
+            puuiloStores={stores || []}
+            latitude={latitude}
+            longitude={longitude}
+          />
+        </TabPanel>
+      </Tabs>
+    </div>
   );
 };
 

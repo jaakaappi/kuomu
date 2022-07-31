@@ -6,29 +6,25 @@ export const calculateFreeTrailersForDateTime = (
   dateTime: DateTime
 ) => {
   if (store.items) {
-    return store.items.reduce((previousSum, currentItem) => {
-      const allCapacityUnits = currentItem.capacityUnits.flat();
+    const freeTrailers = store.items.map((item) => {
+      const allCapacityUnits = item.capacityUnits.flat();
 
-      const availableHourSlots = currentItem.reservations.days[
+      const availableHourSlots = item.reservations.days[
         dateTime.weekday - 1
       ].hours.filter((hour) => hour.hour >= dateTime.hour.toString());
 
-      const freeCapacityUnits = currentItem.reservations
-        ? Array.from(
-            new Set(
-              availableHourSlots.flatMap((hourSlot) => {
-                const slotCapacityUnits = hourSlot.slots[0].capacityUnits;
-                // Puuilo API returns units that are already reserved
-                // Units not listed are available
-                const freeSlotCapacityUnits = allCapacityUnits.filter(
-                  (unit) => !slotCapacityUnits.includes(unit)
-                );
-                return freeSlotCapacityUnits;
-              })
-            )
-          )
-        : [];
-      return previousSum + freeCapacityUnits.length;
-    }, 0);
-  } else return 0;
+      const hourSlotsWithFreeCapacity = availableHourSlots.map((hourSlot) => {
+        const slotCapacityUnits = hourSlot.slots[0].capacityUnits;
+        // Puuilo API returns units that are already reserved
+        // Units not listed are available
+        const freeSlotCapacityUnits = allCapacityUnits.filter(
+          (unit) => !slotCapacityUnits.includes(unit)
+        );
+        return { hour: hourSlot.hour, freeCapacityUnits: freeSlotCapacityUnits };
+      });
+
+      return { id: item.id, hourSlotsWithFreeCapacity: hourSlotsWithFreeCapacity }
+    }).flat();
+    return freeTrailers;
+  } else return [];
 };

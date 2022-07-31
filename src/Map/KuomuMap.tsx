@@ -26,6 +26,14 @@ const KuomuMap = (props: {
     zoom: 13,
   });
 
+  const calculateTotalFreeCapacityUnits = (store: PuuiloStore, dateTime: DateTime) => {
+    const freeTrailersToday = calculateFreeTrailersForDateTime(store, dateTime);
+    const totalFreeTrailers = (new Set(freeTrailersToday.reduce((storeFreeCapacityUnits: Array<string>, currentItem) => {
+      return storeFreeCapacityUnits.concat(currentItem.hourSlotsWithFreeCapacity.reduce((itemFreeCapacityUnits: Array<string>, currentSlot): Array<string> => itemFreeCapacityUnits.concat(currentSlot.freeCapacityUnits), []));
+    }, []))).size;
+    return totalFreeTrailers;
+  }
+
   useEffect(() => {
     if (latitude && longitude) {
       console.log("Lat: " + latitude + " long: " + longitude);
@@ -44,8 +52,8 @@ const KuomuMap = (props: {
               latitude={store.location![1]}
               longitude={store.location![0]}
               icon={puuiloIcon}
-              freeCapacity={calculateFreeTrailersForDateTime(store, DateTime.local())}
-              onClick={() => {}}
+              freeCapacity={calculateTotalFreeCapacityUnits(store, DateTime.local())}
+              onClick={() => { }}
             ></KuomuMarker>
           );
         }) || [];

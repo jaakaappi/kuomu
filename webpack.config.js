@@ -39,9 +39,9 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       inject: "body",
-      template: "./src/index.html",
+      template: "./src/static/index.html",
       filename: "index.html",
-      favicon: "./src/favicon.png",
+      favicon: "./src/static/favicon.png",
     }),
     new Dotenv(),
   ],

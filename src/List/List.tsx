@@ -1,5 +1,5 @@
 import { number } from "prop-types";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { PuuiloStore } from "../types";
 
 const List = (props: {
@@ -40,6 +40,10 @@ const List = (props: {
           return { store: store, distance: undefined };
         });
   }, [puuiloStores, latitude, longitude]);
+
+  useEffect(()=>{
+    
+  }, [sortedStores]);
 
   return (
     <>

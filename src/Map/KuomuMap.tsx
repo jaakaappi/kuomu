@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { usePosition } from "use-position";
 import Map, { Marker } from "react-map-gl";
 import { DateTime } from "luxon";
@@ -9,6 +9,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import puuiloIcon from "../static/puuilo.jpg";
 import KuomuMarker from "./KuomuMarker";
 import { calculateFreeTrailersForDateTime } from "../utils";
+import { DateContext } from "../App";
 
 const mapboxAccessToken = process.env.MAPBOX_API_TOKEN || "";
 
@@ -18,21 +19,24 @@ const KuomuMap = (props: {
   longitude: number | undefined;
 }) => {
   const { puuiloStores, latitude, longitude } = props;
-  const [markers, setMarkers] = useState<Array<JSX.Element>>([]);
 
+  const [markers, setMarkers] = useState<Array<JSX.Element>>([]);
   const [viewState, setViewState] = React.useState({
     longitude: 26.0673,
     latitude: 64.9147,
     zoom: 13,
   });
 
+  const dateContext = useContext(DateContext);
+
   const calculateTotalFreeCapacityUnits = (store: PuuiloStore, dateTime: DateTime) => {
-    const freeTrailersToday = calculateFreeTrailersForDateTime(store, dateTime);
-    const totalFreeTrailers = (new Set(freeTrailersToday.reduce((storeFreeCapacityUnits: Array<string>, currentItem) => {
+    const freeTrailersForDay = calculateFreeTrailersForDateTime(store, dateTime);
+    const totalFreeTrailers = (new Set(freeTrailersForDay.reduce((storeFreeCapacityUnits: Array<string>, currentItem) => {
       return storeFreeCapacityUnits.concat(currentItem.hourSlotsWithFreeCapacity.reduce((itemFreeCapacityUnits: Array<string>, currentSlot): Array<string> => itemFreeCapacityUnits.concat(currentSlot.freeCapacityUnits), []));
     }, []))).size;
+    console.log(freeTrailersForDay);
     return totalFreeTrailers;
-  }
+  };
 
   useEffect(() => {
     if (latitude && longitude) {
@@ -42,6 +46,7 @@ const KuomuMap = (props: {
   }, [latitude, longitude]);
 
   useEffect(() => {
+    console.log(dateContext.date);
     const newMarkers =
       puuiloStores
         .filter((store) => store.location)
@@ -52,13 +57,13 @@ const KuomuMap = (props: {
               latitude={store.location![1]}
               longitude={store.location![0]}
               icon={puuiloIcon}
-              freeCapacity={calculateTotalFreeCapacityUnits(store, DateTime.local())}
+              freeCapacity={calculateTotalFreeCapacityUnits(store, dateContext.date)}
               onClick={() => window.open(store.url, '_blank')}
             />
           );
         }) || [];
     setMarkers(newMarkers);
-  }, [puuiloStores]);
+  }, [puuiloStores, dateContext.date]);
 
   return (
     <div>

@@ -151,7 +151,7 @@ const usePuuiloStores = () => {
         });
         console.log("storesWithSlots");
         console.log(storesWithSlots);
-        setStores(storesWithSlots);
+        setStores([storesWithSlots[0]]);
       } catch (error) {
         setError(error);
         setLoading(false);

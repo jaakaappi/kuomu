@@ -1,5 +1,4 @@
 import { DateTime } from "luxon";
-import { string } from "prop-types";
 import { PuuiloStore } from "./types";
 
 export const calculateFreeTrailersForDateTime = (
@@ -10,9 +9,14 @@ export const calculateFreeTrailersForDateTime = (
     const freeTrailers = store.items.map((item) => {
       const allCapacityUnits = item.capacityUnits.flat();
 
+      console.log(dateTime)
+      console.log(item.reservations)
+      console.log(dateTime.hour.toString())
       const availableHourSlots = item.reservations.days[
         dateTime.weekday - 1
       ].hours.filter((hour) => hour.hour >= dateTime.hour.toString());
+      console.log("availableHourSlots")
+      console.log(availableHourSlots)
 
       const hourSlotsWithFreeCapacity = availableHourSlots.map((hourSlot) => {
         const slotCapacityUnits = hourSlot.slots[0].capacityUnits;

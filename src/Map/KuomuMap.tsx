@@ -62,6 +62,7 @@ const KuomuMap = (props: {
 
   return (
     <div>
+      <p>Karttakuvakkeessa näkyy kaupan logo ja vapaiden kärryjen määrä valitulle päivälle.<br></br>Paina kuvaketta siirtyäksesi kaupan varaussivulle.</p>
       <Map
         {...viewState}
         onMove={(evt) => setViewState(evt.viewState)}

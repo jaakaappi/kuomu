@@ -12,7 +12,7 @@ const DateTimeSelectors = () => {
 
   return (
     <>
-      <p>Päivä:</p>
+      <p>Valittu päivä:</p>
       <DatePicker
         selected={startDate}
         onChange={(date) => setStartDate(date!)}

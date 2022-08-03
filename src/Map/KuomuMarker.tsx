@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Marker } from "react-map-gl";
 
 const KuomuMarker = (props: {
@@ -9,6 +9,7 @@ const KuomuMarker = (props: {
   onClick: () => void;
 }) => {
   const { latitude, longitude, freeCapacity, icon, onClick } = props;
+
   return (
     <Marker latitude={latitude} longitude={longitude} onClick={onClick}>
       <div

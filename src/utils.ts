@@ -22,10 +22,10 @@ export const calculateFreeTrailersForDateTime = (
           (unit) => !slotCapacityUnits.includes(unit)
         );
         return { hour: hourSlot.hour, freeCapacityUnits: freeSlotCapacityUnits };
-      });
+      }).filter((slot) => slot.freeCapacityUnits.length > 0);
 
       return { id: item.id, hourSlotsWithFreeCapacity: hourSlotsWithFreeCapacity }
-    }).flat();
+    }).flat().filter((trailer) => trailer.hourSlotsWithFreeCapacity.length > 0);
     return freeTrailers;
   } else return [];
 };

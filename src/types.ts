@@ -50,4 +50,5 @@ export type PuuiloItem = {
   capacityUnits: Array<string>;
   state: string;
   reservations: PuuiloStoreReservations;
+  images: Array<{sizes: {original: string}}>
 };

@@ -1,6 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import DatePicker from "react-datepicker";
 import { DateTime } from "luxon";
+import { registerLocale, setDefaultLocale } from "react-datepicker";
+import { fi } from "date-fns/locale";
+
+registerLocale("fi", fi);
+setDefaultLocale("fi");
 
 import "react-datepicker/dist/react-datepicker.css";
 import { DateContext } from "../App";
@@ -14,6 +19,9 @@ const DateTimeSelectors = () => {
           return (
             <DatePicker
               selected={date.toJSDate()}
+              locale="fi"
+              minDate={DateTime.local().toJSDate()}
+              dateFormat="dd.MM.yyyy"
               onChange={(date) => {
                 const newDateTime = DateTime.fromJSDate(date!);
                 if (newDateTime.day !== DateTime.local().day) {

@@ -91,7 +91,7 @@ const List = (props: {
                     style={{
                       alignSelf: "center",
                       paddingRight: "10px",
-                      width: "100px",
+                      width: "115px",
                       display: "flex",
                       justifyContent: "center",
                     }}

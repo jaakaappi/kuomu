@@ -1,15 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import List from "./List/List";
 import { usePosition } from "use-position";
-
-import "react-tabs/style/react-tabs.css";
 
 import KuomuMap from "./Map/KuomuMap";
 import Settings from "./Settings/Settings";
 import usePuuiloStores from "./usePuuiloStores";
 
 import { DateTime } from "luxon";
-import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Tabs } from "./Tabs";
 
 export const DateContext = React.createContext({

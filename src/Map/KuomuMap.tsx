@@ -97,7 +97,7 @@ const KuomuMap = (props: {
         onMove={(evt) => setViewState(evt.viewState)}
         mapStyle="mapbox://styles/mapbox/streets-v11"
         mapboxAccessToken={mapboxAccessToken}
-        style={{ height: "75vh" }}
+        style={{ height: "84vh" }}
         dragRotate={false}
       >
         {markers}

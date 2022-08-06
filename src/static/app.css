@@ -18,3 +18,30 @@ body,
   animation-iteration-count: infinite;
   animation-timing-function: linear;
 }
+
+.tab {
+  padding: 5px 10px 6px 10px;
+  margin-bottom: -1px;
+}
+
+.tab a {
+  color: black;
+  outline: none;
+  text-decoration: none;
+}
+
+.selected {
+  border-width: 1px 1px 0 1px;
+  border-style: solid;
+  border-color: lightgrey;
+  border-radius: 5px 5px 0 0;
+  background-color: white;
+}
+
+.disabled {
+  pointer-events: none;
+}
+
+.disabled a {
+  color: lightgrey;
+}

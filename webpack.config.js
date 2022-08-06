@@ -35,6 +35,7 @@ module.exports = {
       directory: path.join(__dirname, "dist"),
     },
     compress: true,
+    historyApiFallback: true,
   },
   plugins: [
     new HtmlWebpackPlugin({

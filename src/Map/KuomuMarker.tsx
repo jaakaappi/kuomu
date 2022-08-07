@@ -18,8 +18,9 @@ const KuomuMarker = (props: {
           flexDirection: "row",
           padding: "5px",
           backgroundColor: "#fff",
-          borderRadius: "5px",
+          borderRadius: "3px",
           letterSpacing: "2px",
+          boxShadow: "0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)",
         }}
       >
         <img src={icon} width={32} height={32} />

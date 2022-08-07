@@ -17,8 +17,10 @@ const KuomuMap = (props: {
   puuiloStores: Array<PuuiloStore>;
   latitude: number | undefined;
   longitude: number | undefined;
+  loading: boolean;
+  error: boolean;
 }) => {
-  const { puuiloStores, latitude, longitude } = props;
+  const { puuiloStores, latitude, longitude, loading, error } = props;
 
   const [markers, setMarkers] = useState<Array<JSX.Element>>([]);
   const [viewState, setViewState] = React.useState({
@@ -86,12 +88,26 @@ const KuomuMap = (props: {
     setMarkers(newMarkers);
   }, [puuiloStores, dateContext.date]);
 
+  const LoadingText = () => <p>Kauppojen tietoja ladataan vielä.</p>;
+  const ErrorText = () => (
+    <p>
+      Tietojen latauksessa tapahtui virhe :( lataa sivu hetken päästä uudestaan.
+    </p>
+  );
+
   return (
     <div>
-      <p>
-        Karttakuvakkeessa näkyy kaupan logo ja vapaiden kärryjen määrä valitulle
-        päivälle.<br></br>Paina kuvaketta siirtyäksesi kaupan varaussivulle.
-      </p>
+      {loading ? (
+        <LoadingText />
+      ) : error ? (
+        <ErrorText />
+      ) : (
+        <p>
+          Karttakuvakkeessa näkyy kaupan logo ja vapaiden kärryjen määrä
+          valitulle päivälle.<br></br>Paina kuvaketta siirtyäksesi kaupan
+          varaussivulle.
+        </p>
+      )}
       <Map
         {...viewState}
         onMove={(evt) => setViewState(evt.viewState)}

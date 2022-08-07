@@ -7,7 +7,7 @@ import Settings from "./Settings/Settings";
 import usePuuiloStores from "./usePuuiloStores";
 
 import { DateTime } from "luxon";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, HashRouter, Route, Routes } from "react-router-dom";
 import { Tabs } from "./Tabs";
 
 export const DateContext = React.createContext({
@@ -27,7 +27,7 @@ const App = () => {
   };
 
   return (
-    <BrowserRouter>
+    <HashRouter>
       <div style={{ padding: "10px" }}>
         <DateContext.Provider value={{ date, setDate }}>
           <Settings />
@@ -40,6 +40,8 @@ const App = () => {
                   puuiloStores={stores || []}
                   latitude={latitude}
                   longitude={longitude}
+                  loading={loading}
+                  error={error}
                 />
               }
             />
@@ -50,13 +52,15 @@ const App = () => {
                   puuiloStores={stores || []}
                   latitude={latitude}
                   longitude={longitude}
+                  loading={loading}
+                  error={error}
                 />
               }
             />
           </Routes>
         </DateContext.Provider>
       </div>
-    </BrowserRouter>
+    </HashRouter>
   );
 };
 

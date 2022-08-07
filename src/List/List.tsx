@@ -13,8 +13,10 @@ const List = (props: {
   puuiloStores: Array<PuuiloStore>;
   latitude: number | undefined;
   longitude: number | undefined;
+  loading: boolean;
+  error: boolean;
 }) => {
-  const { puuiloStores, latitude, longitude } = props;
+  const { puuiloStores, latitude, longitude, loading, error } = props;
 
   const { date } = useContext(DateContext);
 
@@ -63,68 +65,81 @@ const List = (props: {
     return storesWithFreeSlots;
   }, [sortedStores, date]);
 
-  return (
-    <>
-      <h2>Sinua lähimmät vapaat perävaunut</h2>
-      <p>Paina vaunun nimeä siirtyäksesi kaupan varaussivulle.</p>
-      {sortedFreeTrailers.length > 0 ? (
-        sortedFreeTrailers.map((store, storeIndex) => (
-          <div
-            key={store.store.store.id + storeIndex}
-            style={
-              storeIndex == 0
-                ? {}
-                : {
-                    borderStyle: "solid",
-                    padding: "5px",
-                    borderWidth: "1px 0 0 0",
-                  }
-            }
-          >
-            {store.freeTrailers.map((slot, itemIndex) => {
-              const item: PuuiloItem | undefined =
-                store.store.store.items!.find((item) => item.id == slot.id);
-
-              return item ? (
-                <div key={slot.id + itemIndex} style={{ display: "flex" }}>
-                  <div
-                    style={{
-                      alignSelf: "center",
-                      paddingRight: "10px",
-                      width: "115px",
-                      display: "flex",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <img src={item.images[0].sizes.original} height={64} />
-                  </div>
-                  <div>
-                    <h3>
-                      <a
-                        href={`${store.store.store.url}/${formatPuuiloUrlString(
-                          item.title
-                        )}`}
-                      >
-                        {item.title}
-                      </a>
-                    </h3>
-                    <p>
-                      {store.store.store.title} -{" "}
-                      {store.store.distance?.toPrecision(3)} km
-                    </p>
-                  </div>
-                </div>
-              ) : null;
-            })}
-          </div>
-        ))
-      ) : (
-        <p>
-          Missään kaupassa ei ole vuokrattavia vaunuja valitulle päivälle :/
-        </p>
-      )}
-    </>
+  const LoadingText = () => <p>Kauppojen tietoja ladataan vielä.</p>;
+  const ErrorText = () => (
+    <p>
+      Tietojen latauksessa tapahtui virhe :( lataa sivu hetken päästä uudestaan.
+    </p>
   );
+
+  if (loading) {
+    return <LoadingText />;
+  } else if (error) {
+    return <ErrorText />;
+  } else {
+    return (
+      <>
+        <h2>Sinua lähimmät vapaat perävaunut</h2>
+        <p>Paina vaunun nimeä siirtyäksesi kaupan varaussivulle.</p>
+        {sortedFreeTrailers.length > 0 ? (
+          sortedFreeTrailers.map((store, storeIndex) => (
+            <div
+              key={store.store.store.id + storeIndex}
+              style={
+                storeIndex == 0
+                  ? {}
+                  : {
+                      borderStyle: "solid",
+                      padding: "5px",
+                      borderWidth: "1px 0 0 0",
+                    }
+              }
+            >
+              {store.freeTrailers.map((slot, itemIndex) => {
+                const item: PuuiloItem | undefined =
+                  store.store.store.items!.find((item) => item.id == slot.id);
+
+                return item ? (
+                  <div key={slot.id + itemIndex} style={{ display: "flex" }}>
+                    <div
+                      style={{
+                        alignSelf: "center",
+                        paddingRight: "10px",
+                        width: "115px",
+                        display: "flex",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <img src={item.images[0].sizes.original} height={64} />
+                    </div>
+                    <div>
+                      <h3>
+                        <a
+                          href={`${
+                            store.store.store.url
+                          }/${formatPuuiloUrlString(item.title)}`}
+                        >
+                          {item.title}
+                        </a>
+                      </h3>
+                      <p>
+                        {store.store.store.title} -{" "}
+                        {store.store.distance?.toPrecision(3)} km
+                      </p>
+                    </div>
+                  </div>
+                ) : null;
+              })}
+            </div>
+          ))
+        ) : (
+          <p>
+            Missään kaupassa ei ole vuokrattavia vaunuja valitulle päivälle :/
+          </p>
+        )}
+      </>
+    );
+  }
 };
 
 export default List;

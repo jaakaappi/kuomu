@@ -7,7 +7,7 @@ import Settings from "./Settings/Settings";
 import usePuuiloStores from "./usePuuiloStores";
 
 import { DateTime } from "luxon";
-import { BrowserRouter, HashRouter, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { Tabs } from "./Tabs";
 
 export const DateContext = React.createContext({
@@ -27,40 +27,38 @@ const App = () => {
   };
 
   return (
-    <HashRouter>
-      <div style={{ padding: "10px" }}>
-        <DateContext.Provider value={{ date, setDate }}>
-          <Settings />
-          <Tabs loading={loading} error={error} />
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <KuomuMap
-                  puuiloStores={stores || []}
-                  latitude={latitude}
-                  longitude={longitude}
-                  loading={loading}
-                  error={error}
-                />
-              }
-            />
-            <Route
-              path="list"
-              element={
-                <List
-                  puuiloStores={stores || []}
-                  latitude={latitude}
-                  longitude={longitude}
-                  loading={loading}
-                  error={error}
-                />
-              }
-            />
-          </Routes>
-        </DateContext.Provider>
-      </div>
-    </HashRouter>
+    <div style={{ padding: "10px" }}>
+      <DateContext.Provider value={{ date, setDate }}>
+        <Settings />
+        <Tabs loading={loading} error={error} />
+        <Routes>
+          <Route
+            path={"/"}
+            element={
+              <KuomuMap
+                puuiloStores={stores || []}
+                latitude={latitude}
+                longitude={longitude}
+                loading={loading}
+                error={error}
+              />
+            }
+          />
+          <Route
+            path={"list"}
+            element={
+              <List
+                puuiloStores={stores || []}
+                latitude={latitude}
+                longitude={longitude}
+                loading={loading}
+                error={error}
+              />
+            }
+          />
+        </Routes>
+      </DateContext.Provider>
+    </div>
   );
 };
 

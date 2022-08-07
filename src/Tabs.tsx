@@ -28,7 +28,7 @@ export const Tabs = (props: { loading: boolean; error: boolean }) => {
       <div className={classNames}>
         {loading ? <LoadingIconComponent /> : null}
         {error ? "⚠️ " : ""}
-        <Link to={path}>{text}</Link>
+        <Link to={path + location.search}>{text}</Link>
       </div>
     );
   };

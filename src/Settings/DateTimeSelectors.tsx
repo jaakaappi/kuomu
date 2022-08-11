@@ -39,24 +39,26 @@ const DateTimeSelectors = () => {
   };
 
   return (
-    <>
-      <p>Valittu päivä:</p>
-      <DatePicker
-        selected={date.toJSDate()}
-        locale="fi"
-        minDate={DateTime.local().toJSDate()}
-        dateFormat="dd.MM.yyyy"
-        onChange={(date) => {
-          const newDateTime = DateTime.fromJSDate(date!);
-          if (newDateTime.day !== DateTime.local().day) {
-            setDate(newDateTime.set({ hour: 0, minute: 0 }));
-            upsertPaivaParameter(newDateTime);
-          } else {
-            setDate(DateTime.local());
-          }
-        }}
-      />
-    </>
+    <div style={{ padding: "2px 5px 2px 5px" }}>
+      Valittu päivä
+      <div style={{ margin: "2px 0 2px 0" }}>
+        <DatePicker
+          selected={date.toJSDate()}
+          locale="fi"
+          minDate={DateTime.local().toJSDate()}
+          dateFormat="dd.MM.yyyy"
+          onChange={(date) => {
+            const newDateTime = DateTime.fromJSDate(date!);
+            if (newDateTime.day !== DateTime.local().day) {
+              setDate(newDateTime.set({ hour: 0, minute: 0 }));
+              upsertPaivaParameter(newDateTime);
+            } else {
+              setDate(DateTime.local());
+            }
+          }}
+        />
+      </div>
+    </div>
   );
 };
 

@@ -7,6 +7,9 @@ export type PuuiloStore = {
   address: string;
   postCode: Number;
   city: string;
+  /**
+   * long, lat
+   */
   location?: [number, number] | undefined;
   items?: Array<PuuiloItem>;
   url?: string;
@@ -50,5 +53,5 @@ export type PuuiloItem = {
   capacityUnits: Array<string>;
   state: string;
   reservations: PuuiloStoreReservations;
-  images: Array<{sizes: {original: string}}>
+  images: Array<{ sizes: { original: string } }>;
 };

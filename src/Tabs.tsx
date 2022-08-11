@@ -36,10 +36,10 @@ export const Tabs = (props: { loading: boolean; error: boolean }) => {
   return (
     <div
       style={{
-        width: "100%",
         display: "flex",
         borderBottom: "1px solid",
         borderColor: "lightgrey",
+        paddingLeft: "5px",
       }}
     >
       <Tab path={"/"} text={"Kartta"} />

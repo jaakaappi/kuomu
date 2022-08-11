@@ -96,28 +96,42 @@ const KuomuMap = (props: {
   );
 
   return (
-    <div>
-      {loading ? (
-        <LoadingText />
-      ) : error ? (
-        <ErrorText />
-      ) : (
-        <p>
-          Karttakuvakkeessa näkyy kaupan logo ja vapaiden kärryjen määrä
-          valitulle päivälle.<br></br>Paina kuvaketta siirtyäksesi kaupan
-          varaussivulle.
-        </p>
-      )}
-      <Map
-        {...viewState}
-        onMove={(evt) => setViewState(evt.viewState)}
-        mapStyle="mapbox://styles/mapbox/streets-v11"
-        mapboxAccessToken={mapboxAccessToken}
-        style={{ height: "84vh" }}
-        dragRotate={false}
-      >
-        {markers}
-      </Map>
+    <div
+      style={{
+        padding: "5px",
+        flex: 1,
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <div style={{ padding: "5px" }}>
+        {loading ? (
+          <LoadingText />
+        ) : error ? (
+          <ErrorText />
+        ) : (
+          <p>
+            Karttakuvakkeessa näkyy kaupan logo ja vapaiden kärryjen määrä
+            valitulle päivälle.<br></br>Paina kuvaketta siirtyäksesi kaupan
+            varaussivulle.
+          </p>
+        )}
+      </div>
+      <div style={{ position: "relative", width: "100%", height: "100%" }}>
+        <Map
+          {...viewState}
+          onMove={(evt) => setViewState(evt.viewState)}
+          mapStyle="mapbox://styles/mapbox/streets-v11"
+          mapboxAccessToken={mapboxAccessToken}
+          dragRotate={false}
+          style={{ position: "relative", width: "100%", height: "100%" }}
+          onResize={(event) => {
+            console.log(event);
+          }}
+        >
+          {markers}
+        </Map>
+      </div>
     </div>
   );
 };

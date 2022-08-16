@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import List from "./List/List";
 import { usePosition } from "use-position";
 
@@ -9,11 +9,10 @@ import usePuuiloStores from "./usePuuiloStores";
 import { DateTime } from "luxon";
 import { Route, Routes } from "react-router-dom";
 import { Tabs } from "./Tabs";
-import { number } from "prop-types";
 
 export const DateContext = React.createContext({
   date: DateTime.local(),
-  setDate: (newDate: DateTime) => {},
+  setDate: (newDate: DateTime) => { },
 });
 
 export const LocationContext = React.createContext({
@@ -21,13 +20,12 @@ export const LocationContext = React.createContext({
     long: 24.945831,
     lat: 60.192059,
   },
-  setCoordinates: (newCoordinates: { long: number; lat: number }) => {},
+  setCoordinates: (newCoordinates: { long: number; lat: number }) => { },
 });
 
 const App = () => {
   const { stores, loading, error } = usePuuiloStores();
-  const { latitude, longitude, errorMessage } = usePosition(false);
-
+  const { latitude, longitude } = usePosition(false);
   const [date, changeDate] = useState(DateTime.local());
   const [coordinates, setCoordinates] = useState({
     long: 24.945831,
@@ -38,6 +36,10 @@ const App = () => {
     console.log("setDate");
     changeDate(newDate);
   };
+
+  useEffect(() => {
+    if (longitude && latitude) setCoordinates({ long: longitude, lat: latitude })
+  }, [latitude, longitude])
 
   return (
     <div

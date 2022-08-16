@@ -1,15 +1,13 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import { usePosition } from "use-position";
-import Map, { Marker } from "react-map-gl";
+import React, { useContext, useEffect, useState } from "react";
+import Map from "react-map-gl";
 import { DateTime } from "luxon";
 
 import { PuuiloStore } from "../types";
-
 import "mapbox-gl/dist/mapbox-gl.css";
 import puuiloIcon from "../static/puuilo.jpg";
 import KuomuMarker from "./KuomuMarker";
 import { calculateFreeTrailersForDateTime } from "../utils";
-import { DateContext } from "../App";
+import { DateContext, LocationContext } from "../App";
 
 const mapboxAccessToken = process.env.MAPBOX_API_TOKEN || "";
 
@@ -23,9 +21,10 @@ const KuomuMap = (props: {
   const { puuiloStores, latitude, longitude, loading, error } = props;
 
   const [markers, setMarkers] = useState<Array<JSX.Element>>([]);
+  const { coordinates } = useContext(LocationContext);
   const [viewState, setViewState] = React.useState({
-    longitude: 26.0673,
-    latitude: 64.9147,
+    longitude: coordinates.long,
+    latitude: coordinates.lat,
     zoom: 13,
   });
 
@@ -62,9 +61,9 @@ const KuomuMap = (props: {
   useEffect(() => {
     if (latitude && longitude) {
       console.log("Lat: " + latitude + " long: " + longitude);
-      setViewState({ latitude: latitude, longitude: longitude, zoom: 11 });
+      setViewState({ latitude: coordinates.lat, longitude: coordinates.long, zoom: 11 });
     }
-  }, [latitude, longitude]);
+  }, [coordinates]);
 
   useEffect(() => {
     const newMarkers =

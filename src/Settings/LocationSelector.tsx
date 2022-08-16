@@ -1,9 +1,8 @@
-import { center } from "@turf/turf";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { LocationContext } from "../App";
 
 const LocationSelector = () => {
-  const { coordinates, setCoordinates } = useContext(LocationContext);
+  const { setCoordinates } = useContext(LocationContext);
 
   const [searchValue, setSearchValue] = useState("");
   const [searchResults, setSearchResults] = useState<
@@ -13,7 +12,6 @@ const LocationSelector = () => {
 
   useEffect(() => {
     if (searchValue !== "") {
-      console.log('searhing');
       fetch(
         `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
           searchValue
@@ -33,7 +31,6 @@ const LocationSelector = () => {
     text: string;
     center: [number, number];
   }) => {
-    console.log(result);
     setSearchValue(result.text);
     setCoordinates({ long: result.center[0], lat: result.center[1] });
     setHasFocus(false);

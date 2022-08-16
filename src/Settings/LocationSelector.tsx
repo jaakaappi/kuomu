@@ -1,14 +1,21 @@
 import React, { useContext, useEffect, useState } from "react";
+import { usePosition } from "use-position";
+
 import { LocationContext } from "../App";
+import gpsIcon from "../static/gps.png";
 
 const LocationSelector = () => {
   const { setCoordinates } = useContext(LocationContext);
 
-  const [searchValue, setSearchValue] = useState("");
+  const [searchValue, setSearchValue] = useState("Hae");
   const [searchResults, setSearchResults] = useState<
     Array<{ text: string; center: [number, number] }>
   >([]);
   const [hasFocus, setHasFocus] = useState(false);
+
+  useEffect(() => {
+    getPosition();
+  }, [])
 
   useEffect(() => {
     if (searchValue !== "") {
@@ -26,6 +33,10 @@ const LocationSelector = () => {
         .then((value) => setSearchResults(value.features));
     }
   }, [searchValue]);
+
+  const getPosition = () => {
+    navigator.geolocation.getCurrentPosition((position) => setCoordinates({ long: position.coords.longitude, lat: position.coords.latitude }))
+  }
 
   const handleResultClicked = (result: {
     text: string;
@@ -49,6 +60,8 @@ const LocationSelector = () => {
           onClick={() => {
             if (!hasFocus) {
               setHasFocus(true);
+              setSearchValue("");
+              setSearchResults([]);
             }
           }}
           onBlur={(e) => { e.preventDefault(); setHasFocus(false); }}
@@ -77,6 +90,7 @@ const LocationSelector = () => {
               ))}
             </div>
           )}
+        <button style={{ marginLeft: "10px" }} onClick={getPosition} ><img src={gpsIcon} style={{ height: "1em", verticalAlign: "middle", padding: "0 2px 2px 0" }} />Käytä sijaintiasi</button>
       </div>
     </div>
   );

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import List from "./List/List";
-import { usePosition } from "use-position";
 
 import KuomuMap from "./Map/KuomuMap";
 import Settings from "./Settings/Settings";
@@ -25,7 +24,6 @@ export const LocationContext = React.createContext({
 
 const App = () => {
   const { stores, loading, error } = usePuuiloStores();
-  const { latitude, longitude } = usePosition(false);
   const [date, changeDate] = useState(DateTime.local());
   const [coordinates, setCoordinates] = useState({
     long: 24.945831,
@@ -36,10 +34,6 @@ const App = () => {
     console.log("setDate");
     changeDate(newDate);
   };
-
-  useEffect(() => {
-    if (longitude && latitude) setCoordinates({ long: longitude, lat: latitude })
-  }, [latitude, longitude])
 
   return (
     <div
@@ -59,8 +53,6 @@ const App = () => {
               element={
                 <KuomuMap
                   puuiloStores={stores || []}
-                  latitude={latitude}
-                  longitude={longitude}
                   loading={loading}
                   error={error}
                 />
@@ -71,8 +63,8 @@ const App = () => {
               element={
                 <List
                   puuiloStores={stores || []}
-                  latitude={latitude}
-                  longitude={longitude}
+                  latitude={0}
+                  longitude={0}
                   loading={loading}
                   error={error}
                 />

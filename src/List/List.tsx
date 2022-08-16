@@ -35,21 +35,21 @@ const List = (props: {
   >(() => {
     return latitude && longitude
       ? puuiloStores
-          .filter((store) => store.location)
-          .map((store) => {
-            const distance = calculateDistanceToPoint(
-              { latitude: store.location![1], longitude: store.location![0] },
-              { latitude, longitude }
-            );
-            return {
-              store: store,
-              distance: distance,
-            };
-          })
-          .sort((a, b) => a.distance - b.distance)
+        .filter((store) => store.location)
+        .map((store) => {
+          const distance = calculateDistanceToPoint(
+            { latitude: store.location![1], longitude: store.location![0] },
+            { latitude, longitude }
+          );
+          return {
+            store: store,
+            distance: distance,
+          };
+        })
+        .sort((a, b) => a.distance - b.distance)
       : puuiloStores.map((store) => {
-          return { store: store, distance: undefined };
-        });
+        return { store: store, distance: undefined };
+      });
   }, [puuiloStores, latitude, longitude]);
 
   const sortedFreeTrailers = useMemo(() => {
@@ -65,11 +65,13 @@ const List = (props: {
     return storesWithFreeSlots;
   }, [sortedStores, date]);
 
-  const LoadingText = () => <p>Kauppojen tietoja ladataan vielä.</p>;
+  const LoadingText = () =>
+    <div style={{ padding: "5px" }}><p>Kauppojen tietoja ladataan vielä.</p></div>;
   const ErrorText = () => (
-    <p>
+
+    <div style={{ padding: "5px" }}><p>
       Tietojen latauksessa tapahtui virhe :( lataa sivu hetken päästä uudestaan.
-    </p>
+    </p></div>
   );
 
   if (loading) {
@@ -78,7 +80,7 @@ const List = (props: {
     return <ErrorText />;
   } else {
     return (
-      <>
+      <div style={{ padding: "5px" }}>
         <h2>Sinua lähimmät vapaat perävaunut</h2>
         <p>Paina vaunun nimeä siirtyäksesi kaupan varaussivulle.</p>
         {sortedFreeTrailers.length > 0 ? (
@@ -89,10 +91,10 @@ const List = (props: {
                 storeIndex == 0
                   ? {}
                   : {
-                      borderStyle: "solid",
-                      padding: "5px",
-                      borderWidth: "1px 0 0 0",
-                    }
+                    borderStyle: "solid",
+                    padding: "5px",
+                    borderWidth: "1px 0 0 0",
+                  }
               }
             >
               {store.freeTrailers.map((slot, itemIndex) => {
@@ -115,9 +117,8 @@ const List = (props: {
                     <div>
                       <h3>
                         <a
-                          href={`${
-                            store.store.store.url
-                          }/${formatPuuiloUrlString(item.title)}`}
+                          href={`${store.store.store.url
+                            }/${formatPuuiloUrlString(item.title)}`}
                         >
                           {item.title}
                         </a>
@@ -137,7 +138,7 @@ const List = (props: {
             Missään kaupassa ei ole vuokrattavia vaunuja valitulle päivälle :/
           </p>
         )}
-      </>
+      </div>
     );
   }
 };

@@ -13,12 +13,10 @@ const mapboxAccessToken = process.env.MAPBOX_API_TOKEN || "";
 
 const KuomuMap = (props: {
   puuiloStores: Array<PuuiloStore>;
-  latitude: number | undefined;
-  longitude: number | undefined;
   loading: boolean;
   error: boolean;
 }) => {
-  const { puuiloStores, latitude, longitude, loading, error } = props;
+  const { puuiloStores, loading, error } = props;
 
   const [markers, setMarkers] = useState<Array<JSX.Element>>([]);
   const { coordinates } = useContext(LocationContext);
@@ -59,13 +57,6 @@ const KuomuMap = (props: {
   };
 
   useEffect(() => {
-    if (latitude && longitude) {
-      console.log("Lat: " + latitude + " long: " + longitude);
-      setViewState({ latitude: coordinates.lat, longitude: coordinates.long, zoom: 11 });
-    }
-  }, [coordinates]);
-
-  useEffect(() => {
     const newMarkers =
       puuiloStores
         .filter((store) => store.location)
@@ -86,6 +77,13 @@ const KuomuMap = (props: {
         }) || [];
     setMarkers(newMarkers);
   }, [puuiloStores, dateContext.date]);
+
+  useEffect(() => {
+    setViewState({
+      longitude: coordinates.long, latitude: coordinates.lat,
+      zoom: 13,
+    })
+  }, [coordinates])
 
   const LoadingText = () => <p>Kauppojen tietoja ladataan vielä.</p>;
   const ErrorText = () => (

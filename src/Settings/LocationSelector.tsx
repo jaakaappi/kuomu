@@ -13,15 +13,16 @@ const LocationSelector = () => {
 
   useEffect(() => {
     if (searchValue !== "") {
+      console.log('searhing');
       fetch(
         `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
           searchValue
-        )}.json?country=fi&limit=5&types=place&access_token=${
-          process.env.MAPBOX_API_TOKEN
+        )}.json?country=fi&limit=5&types=place&access_token=${process.env.MAPBOX_API_TOKEN
         }`
       )
         .then((response) => response.json())
-        .catch(() => {
+        .catch((e) => {
+          console.log(e);
           setSearchResults([]);
         })
         .then((value) => setSearchResults(value.features));
@@ -32,8 +33,10 @@ const LocationSelector = () => {
     text: string;
     center: [number, number];
   }) => {
+    console.log(result);
     setSearchValue(result.text);
     setCoordinates({ long: result.center[0], lat: result.center[1] });
+    setHasFocus(false);
   };
 
   return (
@@ -49,12 +52,9 @@ const LocationSelector = () => {
           onClick={() => {
             if (!hasFocus) {
               setHasFocus(true);
-              setSearchValue("");
             }
           }}
-          onBlur={() => {
-            setHasFocus(false);
-          }}
+          onBlur={(e) => { e.preventDefault(); setHasFocus(false); }}
         />
         {searchResults.length > 0 &&
           hasFocus && ( // https://reactjs.org/docs/events.html#focus-events
@@ -72,6 +72,7 @@ const LocationSelector = () => {
                   className="hover"
                   style={{ padding: "2px" }}
                   onClick={() => handleResultClicked(result)}
+                  onMouseDown={(event) => event.preventDefault()}
                   key={result.text}
                 >
                   {result.text}

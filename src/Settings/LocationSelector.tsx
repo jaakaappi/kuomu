@@ -49,7 +49,7 @@ const LocationSelector = () => {
 
   return (
     <div style={{ padding: "2px 5px 2px 5px" }}>
-      Sijaintisi
+      Kaupunki
       <div style={{ margin: "2px 0 2px 0" }}>
         <input
           type={"text"}

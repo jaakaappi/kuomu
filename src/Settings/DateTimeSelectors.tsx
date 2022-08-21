@@ -40,7 +40,7 @@ const DateTimeSelectors = () => {
 
   return (
     <div style={{ padding: "2px 5px 2px 5px" }}>
-      Valittu päivä
+      Päivä
       <div style={{ margin: "2px 0 2px 0" }}>
         <DatePicker
           selected={date.toJSDate()}

@@ -127,6 +127,7 @@ const KuomuMap = (props: {
           onResize={(event) => {
             console.log(event);
           }}
+          onRotateStart={(e) => e.originalEvent?.preventDefault()}
         >
           {markers}
         </Map>

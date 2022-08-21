@@ -121,6 +121,8 @@ const KuomuMap = (props: {
           mapStyle="mapbox://styles/mapbox/streets-v11"
           mapboxAccessToken={mapboxAccessToken}
           dragRotate={false}
+          touchPitch={false}
+          touchZoomRotate={false}
           style={{ position: "relative", width: "100%", height: "100%" }}
           onResize={(event) => {
             console.log(event);

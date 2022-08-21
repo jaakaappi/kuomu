@@ -8,6 +8,7 @@ import puuiloIcon from "../static/puuilo.jpg";
 import KuomuMarker from "./KuomuMarker";
 import { calculateFreeTrailersForDateTime } from "../utils";
 import { DateContext, LocationContext } from "../App";
+import { TouchPitchHandler } from "mapbox-gl";
 
 const mapboxAccessToken = process.env.MAPBOX_API_TOKEN || "";
 
@@ -30,9 +31,9 @@ const KuomuMap = (props: {
 
   useEffect(() => {
     if (mapRef && mapRef.current) {
-      mapRef.current.touchZoomRotate.disableRotation();
+      mapRef.current.getMap().touchZoomRotate.disableRotation();
     }
-  }, [mapRef])
+  }, [mapRef, mapRef.current])
 
   const calculateTotalFreeCapacityUnits = (
     store: PuuiloStore,

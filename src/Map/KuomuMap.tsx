@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useState } from "react";
-import Map from "react-map-gl";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import Map, { MapRef } from "react-map-gl";
 import { DateTime } from "luxon";
 
 import { PuuiloStore } from "../types";
@@ -25,8 +25,14 @@ const KuomuMap = (props: {
     latitude: coordinates.lat,
     zoom: 13,
   });
-
   const dateContext = useContext(DateContext);
+  const mapRef = useRef<MapRef>(null);
+
+  useEffect(() => {
+    if (mapRef && mapRef.current) {
+      mapRef.current.touchZoomRotate.disableRotation();
+    }
+  }, [mapRef])
 
   const calculateTotalFreeCapacityUnits = (
     store: PuuiloStore,
@@ -117,17 +123,12 @@ const KuomuMap = (props: {
       <div style={{ position: "relative", width: "100%", height: "100%" }}>
         <Map
           {...viewState}
+          ref={mapRef}
           onMove={(evt) => setViewState(evt.viewState)}
           mapStyle="mapbox://styles/mapbox/streets-v11"
           mapboxAccessToken={mapboxAccessToken}
           dragRotate={false}
-          touchPitch={false}
-          //touchZoomRotate={false}
           style={{ position: "relative", width: "100%", height: "100%" }}
-          onResize={(event) => {
-            console.log(event);
-          }}
-          onRotate={(e) => e.originalEvent?.stopImmediatePropagation()}
         >
           {markers}
         </Map>

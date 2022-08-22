@@ -16,6 +16,7 @@ const LocationSelector = () => {
   const [positionLoading, setPositionLoading] = useState(false);
 
   useEffect(() => {
+    setPositionLoading(true);
     getPosition();
   }, [])
 

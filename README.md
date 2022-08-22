@@ -2,7 +2,6 @@
 
 ## Todo
 
-- Update location into search field when using button or automatic location on navigation
 - Zoom out to fit closest store into view when using location
 - Re-enable list view distance calculation
 - Disable site fetching location again when returning to tab

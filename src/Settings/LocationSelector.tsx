@@ -3,15 +3,17 @@ import { usePosition } from "use-position";
 
 import { LocationContext } from "../App";
 import gpsIcon from "../static/gps.png";
+import loadingIcon from "../static/loading.png";
 
 const LocationSelector = () => {
-  const { setCoordinates } = useContext(LocationContext);
+  const { coordinates, setCoordinates } = useContext(LocationContext);
 
   const [searchValue, setSearchValue] = useState("Hae");
   const [searchResults, setSearchResults] = useState<
     Array<{ text: string; center: [number, number] }>
   >([]);
   const [hasFocus, setHasFocus] = useState(false);
+  const [positionLoading, setPositionLoading] = useState(false);
 
   useEffect(() => {
     getPosition();
@@ -35,7 +37,25 @@ const LocationSelector = () => {
   }, [searchValue]);
 
   const getPosition = () => {
-    navigator.geolocation.getCurrentPosition((position) => setCoordinates({ long: position.coords.longitude, lat: position.coords.latitude }))
+    setPositionLoading(true);
+    navigator.geolocation.getCurrentPosition((position) => {
+      setCoordinates({ long: position.coords.longitude, lat: position.coords.latitude });
+      fetch(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${position.coords.longitude},${position.coords.latitude}.json?country=fi&limit=1&types=place&access_token=${process.env.MAPBOX_API_TOKEN
+        }`
+      )
+        .then((response) => response.json())
+        .catch((e) => {
+          console.log(e);
+        })
+        .then((value) => {
+          setSearchValue(value.features[0].text)
+        });
+      setPositionLoading(false);
+    }, (e) => {
+      console.log(e);
+      setPositionLoading(false);
+    });
   }
 
   const handleResultClicked = (result: {
@@ -90,7 +110,7 @@ const LocationSelector = () => {
               ))}
             </div>
           )}
-        <button style={{ marginLeft: "10px" }} onClick={getPosition} ><img src={gpsIcon} style={{ height: "1em", verticalAlign: "middle", padding: "0 2px 2px 0" }} />Käytä sijaintiasi</button>
+        <button style={{ marginLeft: "10px" }} onClick={getPosition} ><img className={positionLoading ? "loading" : ""} src={positionLoading ? loadingIcon : gpsIcon} style={{ height: "1em", verticalAlign: "middle", margin: "0 2px 2px 0" }} />Käytä sijaintiasi</button>
       </div>
     </div>
   );

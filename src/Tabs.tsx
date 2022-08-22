@@ -8,7 +8,7 @@ export const Tabs = (props: { loading: boolean; error: boolean }) => {
 
   const LoadingIconComponent = () => (
     <img
-      id="loading"
+      className="loading"
       src={loadingIcon}
       width="16px"
       height="16px"

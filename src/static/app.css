@@ -11,7 +11,7 @@ body,
   }
 }
 
-#loading {
+.loading {
   animation-name: rotate;
   animation-duration: 1s;
   animation-delay: 0s;

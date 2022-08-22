@@ -63,8 +63,8 @@ const App = () => {
               element={
                 <List
                   puuiloStores={stores || []}
-                  latitude={0}
-                  longitude={0}
+                  latitude={coordinates.lat}
+                  longitude={coordinates.long}
                   loading={loading}
                   error={error}
                 />

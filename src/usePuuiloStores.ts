@@ -86,8 +86,6 @@ const usePuuiloStores = () => {
         ).map((itemResponse) => {
           return itemResponse.data as Array<PuuiloItem>;
         });
-        console.log("items");
-        console.log(items);
         const storesWithItems = storesWithLocations.map((store, index) => {
           if (items[index]) {
             const newStoreWithItems = {
@@ -102,8 +100,6 @@ const usePuuiloStores = () => {
             return store;
           }
         });
-        console.log("storesWithItems");
-        console.log(storesWithItems);
 
         const slotResponsesPerStore = await Promise.all(
           storesWithItems.map(async (store) => {
@@ -153,8 +149,6 @@ const usePuuiloStores = () => {
           };
           return newStoreWithSlots;
         });
-        console.log("storesWithSlots");
-        console.log(storesWithSlots);
         setStores(storesWithSlots);
       } catch (error) {
         setError(error);

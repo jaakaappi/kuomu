@@ -1,15 +1,15 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import Map, { MapRef } from "react-map-gl";
 import { DateTime } from "luxon";
+import bbox from "@turf/bbox";
+import { multiPoint, Polygon } from "@turf/helpers";
+import "mapbox-gl/dist/mapbox-gl.css";
 
 import { PuuiloStore } from "../types";
-import "mapbox-gl/dist/mapbox-gl.css";
 import puuiloIcon from "../static/puuilo.jpg";
 import KuomuMarker from "./KuomuMarker";
 import { calculateFreeTrailersForDateTime } from "../utils";
 import { DateContext, LocationContext } from "../App";
-import bbox from "@turf/bbox";
-import { multiPoint } from "@turf/helpers";
 
 const mapboxAccessToken = process.env.MAPBOX_API_TOKEN || "";
 
@@ -25,11 +25,6 @@ const KuomuMap = (props: {
 
   const [markers, setMarkers] = useState<Array<JSX.Element>>([]);
   const { coordinates } = useContext(LocationContext);
-  const [viewState, setViewState] = React.useState({
-    longitude: coordinates.long,
-    latitude: coordinates.lat,
-    zoom: 13,
-  });
   const dateContext = useContext(DateContext);
   const mapRef = useRef<MapRef>(null);
 
@@ -90,28 +85,18 @@ const KuomuMap = (props: {
   }, [sortedPuuiloStores, dateContext.date]);
 
   useEffect(() => {
-    setViewState({
-      longitude: coordinates.long,
-      latitude: coordinates.lat,
-      zoom: 13,
-    });
-  }, [coordinates]);
-
-  useEffect(() => {
-    if (coordinates && sortedPuuiloStores.length > 0) {
+    if (coordinates && sortedPuuiloStores.length > 0 && sortedPuuiloStores[0].store.location) {
       const [minLng, minLat, maxLng, maxLat] = bbox(
         multiPoint([
           [coordinates.long, coordinates.lat],
           sortedPuuiloStores[0].store.location!,
         ])
       );
-      mapRef.current?.fitBounds(
-        [
-          [minLng, minLat],
-          [maxLng, maxLat],
-        ],
-        { padding: 200, duration: 1000 }
-      );
+      const bounds = mapRef.current?.cameraForBounds([
+        [minLng, minLat],
+        [maxLng, maxLat],
+      ], { padding: window.innerWidth / 10 });
+      mapRef.current?.jumpTo({ ...bounds });
     }
   }, [coordinates, sortedPuuiloStores]);
 
@@ -146,9 +131,8 @@ const KuomuMap = (props: {
       </div>
       <div style={{ position: "relative", width: "100%", height: "100%" }}>
         <Map
-          {...viewState}
+          initialViewState={{ longitude: coordinates.long, latitude: coordinates.lat, zoom: 11 }}
           ref={mapRef}
-          onMove={(evt) => setViewState(evt.viewState)}
           mapStyle="mapbox://styles/mapbox/streets-v11"
           mapboxAccessToken={mapboxAccessToken}
           dragRotate={false}

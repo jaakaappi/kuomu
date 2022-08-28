@@ -13,7 +13,7 @@ import distance from "@turf/distance";
 
 export const DateContext = React.createContext({
   date: DateTime.local(),
-  setDate: (newDate: DateTime) => {},
+  setDate: (newDate: DateTime) => { },
 });
 
 export const LocationContext = React.createContext({
@@ -21,7 +21,7 @@ export const LocationContext = React.createContext({
     long: 24.945831,
     lat: 60.192059,
   },
-  setCoordinates: (newCoordinates: { long: number; lat: number }) => {},
+  setCoordinates: (newCoordinates: { long: number; lat: number }) => { },
 });
 
 const App = () => {
@@ -48,26 +48,25 @@ const App = () => {
     if (stores) {
       return coordinates.lat && coordinates.long
         ? stores
-            .filter((store) => store.location)
-            .map((store) => {
-              const distance = calculateDistanceToPoint(
-                { latitude: store.location![1], longitude: store.location![0] },
-                { latitude: coordinates.lat, longitude: coordinates.long }
-              );
-              return {
-                store: store,
-                distance: distance,
-              };
-            })
-            .sort((a, b) => a.distance - b.distance)
+          .filter((store) => store.location)
+          .map((store) => {
+            const distance = calculateDistanceToPoint(
+              { latitude: store.location![1], longitude: store.location![0] },
+              { latitude: coordinates.lat, longitude: coordinates.long }
+            );
+            return {
+              store: store,
+              distance: distance,
+            };
+          })
+          .sort((a, b) => a.distance - b.distance)
         : stores.map((store) => {
-            return { store: store, distance: undefined };
-          });
+          return { store: store, distance: undefined };
+        });
     } else return [];
   }, [stores, coordinates]);
 
   const setDate = (newDate: DateTime) => {
-    console.log("setDate");
     changeDate(newDate);
   };
 

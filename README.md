@@ -12,8 +12,8 @@ Small web app for finding the closest free Puuilo trailers, as the rental sites 
 - City selector, zooms map into location and closest store and re-orders the list based on distance
 - Button to use your location (city)
 
-<img src="https://i.imgur.com/ZdPUSuL.png" width="49%"/>
-<img src="https://i.imgur.com/FXesJPz.png" width="49%"/>
+<img src="https://i.imgur.com/ZdPUSuL.png" />
+<img src="https://i.imgur.com/FXesJPz.png" />
 
 ## Todo
 

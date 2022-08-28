@@ -2,14 +2,15 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import Map, { MapRef } from "react-map-gl";
 import { DateTime } from "luxon";
 import bbox from "@turf/bbox";
-import { multiPoint, Polygon } from "@turf/helpers";
+import { multiPoint } from "@turf/helpers";
 import "mapbox-gl/dist/mapbox-gl.css";
 
 import { PuuiloStore } from "../types";
 import puuiloIcon from "../static/puuilo.jpg";
-import KuomuMarker from "./KuomuMarker";
+import StoreMarker from "./StoreMarker";
 import { calculateFreeTrailersForDateTime } from "../utils";
 import { DateContext, LocationContext } from "../App";
+import LocationMarker from "./LocationMarker";
 
 const mapboxAccessToken = process.env.MAPBOX_API_TOKEN || "";
 
@@ -23,7 +24,7 @@ const KuomuMap = (props: {
 }) => {
   const { sortedPuuiloStores, loading, error } = props;
 
-  const [markers, setMarkers] = useState<Array<JSX.Element>>([]);
+  const [puuiloStoreMarkers, setMarkers] = useState<Array<JSX.Element>>([]);
   const { coordinates } = useContext(LocationContext);
   const dateContext = useContext(DateContext);
   const mapRef = useRef<MapRef>(null);
@@ -68,7 +69,7 @@ const KuomuMap = (props: {
         .filter(({ store }) => store.location)
         .map(({ store }) => {
           return (
-            <KuomuMarker
+            <StoreMarker
               key={store.id}
               latitude={store.location![1]}
               longitude={store.location![0]}
@@ -95,7 +96,7 @@ const KuomuMap = (props: {
       const bounds = mapRef.current?.cameraForBounds([
         [minLng, minLat],
         [maxLng, maxLat],
-      ], { padding: window.innerWidth / 10 });
+      ], { padding: window.innerWidth / 8 });
       mapRef.current?.jumpTo({ ...bounds });
     }
   }, [coordinates, sortedPuuiloStores]);
@@ -137,8 +138,10 @@ const KuomuMap = (props: {
           mapboxAccessToken={mapboxAccessToken}
           dragRotate={false}
           style={{ position: "relative", width: "100%", height: "100%" }}
+          maxZoom={14}
         >
-          {markers}
+          {puuiloStoreMarkers}
+          <LocationMarker longitude={coordinates.long} latitude={coordinates.lat} />
         </Map>
       </div>
     </div>

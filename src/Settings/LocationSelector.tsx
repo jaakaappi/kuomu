@@ -14,10 +14,14 @@ const LocationSelector = () => {
   >([]);
   const [hasFocus, setHasFocus] = useState(false);
   const [positionLoading, setPositionLoading] = useState(false);
+  const [initialPositionHasBeenLoaded, setInitialPositionHasBeenLoaded] = useState(false);
 
   useEffect(() => {
-    setPositionLoading(true);
-    getPosition();
+    if (!initialPositionHasBeenLoaded) {
+      setPositionLoading(true);
+      getPosition();
+      setInitialPositionHasBeenLoaded(true);
+    }
   }, [])
 
   useEffect(() => {

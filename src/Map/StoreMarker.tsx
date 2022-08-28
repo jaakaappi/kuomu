@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Marker } from "react-map-gl";
 
-const KuomuMarker = (props: {
+const StoreMarker = (props: {
   latitude: number;
   longitude: number;
   icon: any;
@@ -39,4 +39,4 @@ const KuomuMarker = (props: {
   );
 };
 
-export default KuomuMarker;
+export default StoreMarker;

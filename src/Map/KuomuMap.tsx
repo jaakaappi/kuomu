@@ -8,16 +8,20 @@ import puuiloIcon from "../static/puuilo.jpg";
 import KuomuMarker from "./KuomuMarker";
 import { calculateFreeTrailersForDateTime } from "../utils";
 import { DateContext, LocationContext } from "../App";
-import { TouchPitchHandler } from "mapbox-gl";
+import bbox from "@turf/bbox";
+import { multiPoint } from "@turf/helpers";
 
 const mapboxAccessToken = process.env.MAPBOX_API_TOKEN || "";
 
 const KuomuMap = (props: {
-  puuiloStores: Array<PuuiloStore>;
+  sortedPuuiloStores: Array<{
+    distance: number | undefined;
+    store: PuuiloStore;
+  }>;
   loading: boolean;
   error: boolean;
 }) => {
-  const { puuiloStores, loading, error } = props;
+  const { sortedPuuiloStores, loading, error } = props;
 
   const [markers, setMarkers] = useState<Array<JSX.Element>>([]);
   const { coordinates } = useContext(LocationContext);
@@ -33,7 +37,7 @@ const KuomuMap = (props: {
     if (mapRef && mapRef.current) {
       mapRef.current.getMap().touchZoomRotate.disableRotation();
     }
-  }, [mapRef, mapRef.current])
+  }, [mapRef, mapRef.current]);
 
   const calculateTotalFreeCapacityUnits = (
     store: PuuiloStore,
@@ -65,9 +69,9 @@ const KuomuMap = (props: {
 
   useEffect(() => {
     const newMarkers =
-      puuiloStores
-        .filter((store) => store.location)
-        .map((store) => {
+      sortedPuuiloStores
+        .filter(({ store }) => store.location)
+        .map(({ store }) => {
           return (
             <KuomuMarker
               key={store.id}
@@ -83,14 +87,33 @@ const KuomuMap = (props: {
           );
         }) || [];
     setMarkers(newMarkers);
-  }, [puuiloStores, dateContext.date]);
+  }, [sortedPuuiloStores, dateContext.date]);
 
   useEffect(() => {
     setViewState({
-      longitude: coordinates.long, latitude: coordinates.lat,
+      longitude: coordinates.long,
+      latitude: coordinates.lat,
       zoom: 13,
-    })
-  }, [coordinates])
+    });
+  }, [coordinates]);
+
+  useEffect(() => {
+    if (coordinates && sortedPuuiloStores.length > 0) {
+      const [minLng, minLat, maxLng, maxLat] = bbox(
+        multiPoint([
+          [coordinates.long, coordinates.lat],
+          sortedPuuiloStores[0].store.location!,
+        ])
+      );
+      mapRef.current?.fitBounds(
+        [
+          [minLng, minLat],
+          [maxLng, maxLat],
+        ],
+        { padding: 200, duration: 1000 }
+      );
+    }
+  }, [coordinates, sortedPuuiloStores]);
 
   const LoadingText = () => <p>Kauppojen tietoja ladataan vielä.</p>;
   const ErrorText = () => (

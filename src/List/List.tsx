@@ -1,6 +1,4 @@
-import { DateTime } from "luxon";
 import React, { useContext, useMemo } from "react";
-import { distance } from "@turf/turf";
 
 import { PuuiloItem, PuuiloStore } from "../types";
 import {
@@ -10,50 +8,21 @@ import {
 import { DateContext } from "../App";
 
 const List = (props: {
-  puuiloStores: Array<PuuiloStore>;
+  sortedPuuiloStores: Array<{
+    distance: number | undefined;
+    store: PuuiloStore;
+  }>;
   latitude: number | undefined;
   longitude: number | undefined;
   loading: boolean;
   error: boolean;
 }) => {
-  const { puuiloStores, latitude, longitude, loading, error } = props;
+  const { sortedPuuiloStores, latitude, longitude, loading, error } = props;
 
   const { date } = useContext(DateContext);
 
-  const calculateDistanceToPoint = (
-    point1: { latitude: number; longitude: number },
-    point2: { latitude: number; longitude: number }
-  ) => {
-    return distance(
-      [point1.longitude, point1.latitude],
-      [point2.longitude, point2.latitude]
-    );
-  };
-
-  const sortedStores = useMemo<
-    Array<{ distance: number | undefined; store: PuuiloStore }>
-  >(() => {
-    return latitude && longitude
-      ? puuiloStores
-        .filter((store) => store.location)
-        .map((store) => {
-          const distance = calculateDistanceToPoint(
-            { latitude: store.location![1], longitude: store.location![0] },
-            { latitude, longitude }
-          );
-          return {
-            store: store,
-            distance: distance,
-          };
-        })
-        .sort((a, b) => a.distance - b.distance)
-      : puuiloStores.map((store) => {
-        return { store: store, distance: undefined };
-      });
-  }, [puuiloStores, latitude, longitude]);
-
   const sortedFreeTrailers = useMemo(() => {
-    const storesWithFreeSlots = sortedStores
+    const storesWithFreeSlots = sortedPuuiloStores
       .map((store) => {
         const storeFreeTrailersToday = calculateFreeTrailersForDateTime(
           store.store,
@@ -63,15 +32,20 @@ const List = (props: {
       })
       .filter((store) => store.freeTrailers.length > 0);
     return storesWithFreeSlots;
-  }, [sortedStores, date]);
+  }, [sortedPuuiloStores, date]);
 
-  const LoadingText = () =>
-    <div style={{ padding: "5px" }}><p>Kauppojen tietoja ladataan vielä.</p></div>;
+  const LoadingText = () => (
+    <div style={{ padding: "5px" }}>
+      <p>Kauppojen tietoja ladataan vielä.</p>
+    </div>
+  );
   const ErrorText = () => (
-
-    <div style={{ padding: "5px" }}><p>
-      Tietojen latauksessa tapahtui virhe :( lataa sivu hetken päästä uudestaan.
-    </p></div>
+    <div style={{ padding: "5px" }}>
+      <p>
+        Tietojen latauksessa tapahtui virhe :( lataa sivu hetken päästä
+        uudestaan.
+      </p>
+    </div>
   );
 
   if (loading) {
@@ -91,10 +65,10 @@ const List = (props: {
                 storeIndex == 0
                   ? {}
                   : {
-                    borderStyle: "solid",
-                    padding: "5px",
-                    borderWidth: "1px 0 0 0",
-                  }
+                      borderStyle: "solid",
+                      padding: "5px",
+                      borderWidth: "1px 0 0 0",
+                    }
               }
             >
               {store.freeTrailers.map((slot, itemIndex) => {
@@ -117,8 +91,9 @@ const List = (props: {
                     <div>
                       <h3>
                         <a
-                          href={`${store.store.store.url
-                            }/${formatPuuiloUrlString(item.title)}`}
+                          href={`${
+                            store.store.store.url
+                          }/${formatPuuiloUrlString(item.title)}`}
                         >
                           {item.title}
                         </a>
